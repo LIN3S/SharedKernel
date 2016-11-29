@@ -1,7 +1,7 @@
 #LIN3S Shared Kernel
 >Shared Kernel of LIN3S projects for different purposes
 
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/9d974f76-3f53-487b-b6ed-92d3b328a450/mini.png)](https://insight.sensiolabs.com/projects/9d974f76-3f53-487b-b6ed-92d3b328a450)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/681442d3-1c58-437e-aaaf-f185aa06a4eb/mini.png)](https://insight.sensiolabs.com/projects/681442d3-1c58-437e-aaaf-f185aa06a4eb)
 [![Build Status](https://travis-ci.org/LIN3S/SharedKernel.svg?branch=master)](https://travis-ci.org/LIN3S/SharedKernel)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/LIN3S/SharedKernel/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/LIN3S/SharedKernel/?branch=master)
 [![Total Downloads](https://poser.pugx.org/lin3s/shared-kernel/downloads)](https://packagist.org/packages/lin3s/shared-kernel)
