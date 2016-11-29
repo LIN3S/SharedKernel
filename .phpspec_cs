@@ -28,6 +28,7 @@ return Symfony\CS\Config::create()
     ->finder($finder)
     ->level(Symfony\CS\FixerInterface::SYMFONY_LEVEL)
     ->fixers([
+        '-psr0',
         '-visibility',
         '-unalign_double_arrow',
         '-concat_without_spaces',

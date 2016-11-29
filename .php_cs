@@ -30,6 +30,7 @@ return Symfony\CS\Config::create()
     ->finder($finder)
     ->level(Symfony\CS\FixerInterface::SYMFONY_LEVEL)
     ->fixers([
+        '-psr0',
         '-unalign_double_arrow',
         '-concat_without_spaces',
         'align_double_arrow',

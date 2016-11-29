@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace LIN3S\SharedKernel\tests\Double\Domain\Model\Identity;
+namespace LIN3S\SharedKernel\Tests\Double\Domain\Model\Identity;
 
 use LIN3S\SharedKernel\Domain\Model\Identity\Id;
 

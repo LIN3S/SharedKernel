@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace LIN3S\SharedKernel\tests\Matchers;
+namespace LIN3S\SharedKernel\Tests\Matchers;
 
 use LIN3S\SharedKernel\Domain\Model\AggregateRoot;
 use PhpSpec\Exception\Example\FailureException;
