@@ -29,7 +29,7 @@ class AggregateRootEventRecorder implements EventSubscriber, ContainsRecordedMes
         $this->collectedEvents = [];
     }
 
-    public function getSubscribedEvents() : array
+    public function getSubscribedEvents()
     {
         return [
             Events::postPersist,
@@ -53,7 +53,7 @@ class AggregateRootEventRecorder implements EventSubscriber, ContainsRecordedMes
         $this->collectEventsFromAggregateRoot($event);
     }
 
-    public function recordedMessages() : array
+    public function recordedMessages()
     {
         return $this->collectedEvents;
     }
