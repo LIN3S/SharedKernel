@@ -20,12 +20,17 @@ class Phone
 
     public function __construct($phone)
     {
-        $this->phone = $phone ? $this->cleanPhone($phone) : '';
+        $this->phone = $this->setPhone($phone);
+    }
+
+    public function phone()
+    {
+        return $this->phone;
     }
 
     public function equals(Phone $phone)
     {
-        return strtolower((string)$this) === strtolower((string)$phone);
+        return $this->phone === $phone->phone();
     }
 
     public function __toString()
@@ -33,21 +38,12 @@ class Phone
         return (string)$this->phone;
     }
 
-    private function cleanPhone($phone)
+    private function setPhone($phone)
     {
-        $absolute = $phone[0] === '+';
+        $phone = str_replace('+34', '', $phone);
         $numbers = preg_replace('/\D/', '', $phone);
 
         if (!$numbers) {
-            throw new PhoneFormatInvalidException();
-        }
-
-        // special logic for russian local phone notation
-        if ($numbers[0] === '8' && !$absolute && strlen($numbers) == 11) {
-            $numbers[0] = '7';
-        }
-
-        if ($numbers[0] !== '7' || strlen($numbers) != 11) {
             throw new PhoneFormatInvalidException();
         }
 
