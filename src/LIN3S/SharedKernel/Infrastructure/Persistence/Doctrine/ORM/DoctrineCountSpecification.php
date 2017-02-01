@@ -11,12 +11,12 @@
 
 namespace LIN3S\SharedKernel\Infrastructure\Persistence\Doctrine\ORM;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
 interface DoctrineCountSpecification
 {
-    public function buildCount(EntityManager $manager);
+    public function buildCount(QueryBuilder $queryBuilder);
 }

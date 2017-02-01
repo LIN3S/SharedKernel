@@ -9,23 +9,23 @@
  * file that was distributed with this source code.
  */
 
-namespace Spec\LIN3S\SharedKernel\Domain\Model;
+namespace Spec\LIN3S\SharedKernel\Exception;
 
-use LIN3S\SharedKernel\Domain\Model\Exception;
+use LIN3S\SharedKernel\Exception\DomainException;
 use PhpSpec\ObjectBehavior;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class ExceptionSpec extends ObjectBehavior
+class DomainExceptionSpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
-        $this->shouldHaveType(Exception::class);
+        $this->shouldHaveType(DomainException::class);
     }
 
     function it_extends_php_exception()
     {
-        $this->shouldHaveType(\Exception::class);
+        $this->shouldHaveType(\DomainException::class);
     }
 }

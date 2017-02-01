@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace LIN3S\SharedKernel\Domain\Model;
+namespace LIN3S\SharedKernel\Exception;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class CollectionElementAlreadyAddedException extends Exception
+class DomainException extends \DomainException
 {
 }

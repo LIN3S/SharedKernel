@@ -9,15 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace LIN3S\SharedKernel\Domain\Model;
+namespace LIN3S\SharedKernel\Domain\Event;
+
+use LIN3S\SharedKernel\Domain\Model\DomainEvent;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class PhoneFormatInvalidException extends Exception
+interface DomainEventSubscriber
 {
-    public function __construct()
-    {
-        parent::__construct('Invalid phone format');
-    }
+    public function handle(DomainEvent $aDomainEvent);
+
+    public function isSubscribedTo(DomainEvent $anEvent);
 }

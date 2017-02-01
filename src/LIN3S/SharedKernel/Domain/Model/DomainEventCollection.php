@@ -11,6 +11,8 @@
 
 namespace LIN3S\SharedKernel\Domain\Model;
 
+use LIN3S\SharedKernel\Domain\Model\Collection\Collection;
+
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */

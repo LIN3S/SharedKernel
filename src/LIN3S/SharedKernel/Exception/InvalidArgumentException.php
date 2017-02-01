@@ -9,13 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace LIN3S\SharedKernel\Domain\Model\Identity;
-
-use LIN3S\SharedKernel\Exception\InvalidArgumentException;
+namespace LIN3S\SharedKernel\Exception;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class InvalidIdException extends InvalidArgumentException
+class InvalidArgumentException extends \InvalidArgumentException
 {
 }

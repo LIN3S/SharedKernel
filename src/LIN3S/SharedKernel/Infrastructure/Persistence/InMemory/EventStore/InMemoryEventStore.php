@@ -11,7 +11,7 @@
 
 namespace LIN3S\SharedKernel\Infrastructure\Persistence\InMemory\EventStore;
 
-use LIN3S\SharedKernel\Domain\Model\AggregateDoesNotExistException;
+use LIN3S\SharedKernel\Domain\Model\AggregateRootDoesNotExistException;
 use LIN3S\SharedKernel\Domain\Model\DomainEventCollection;
 use LIN3S\SharedKernel\Domain\Model\Identity\Id;
 use LIN3S\SharedKernel\Event\EventStore;
@@ -67,7 +67,7 @@ class InMemoryEventStore implements EventStore
             }
         }
         if (0 === $events->count()) {
-            throw new AggregateDoesNotExistException($aggregateId);
+            throw new AggregateRootDoesNotExistException($aggregateId);
         }
 
         return new EventStream($aggregateId, $events);

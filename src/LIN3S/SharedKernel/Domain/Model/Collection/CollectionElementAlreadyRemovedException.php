@@ -9,11 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace LIN3S\SharedKernel\Domain\Model;
+namespace LIN3S\SharedKernel\Domain\Model\Collection;
+
+use LIN3S\SharedKernel\Exception\Exception;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class EmailInvalidException extends Exception
+class CollectionElementAlreadyRemovedException extends Exception
 {
 }

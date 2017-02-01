@@ -11,9 +11,20 @@
 
 namespace LIN3S\SharedKernel\Domain\Model;
 
+use LIN3S\SharedKernel\Exception\Exception;
+
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class Exception extends \Exception
+class AggregateRootDoesNotExistException extends Exception
 {
+    public function __construct($aggregateId)
+    {
+        parent::__construct(
+            sprintf(
+                'Does not exist any aggregate root with "%s" id',
+                $aggregateId
+            )
+        );
+    }
 }

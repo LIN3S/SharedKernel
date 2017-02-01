@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace LIN3S\SharedKernel\Domain\Model;
+namespace LIN3S\SharedKernel\Exception;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class CollectionElementAlreadyRemovedException extends Exception
+class LogicException extends \LogicException
 {
 }

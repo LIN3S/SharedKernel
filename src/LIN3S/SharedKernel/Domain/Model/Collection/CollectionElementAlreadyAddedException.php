@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace LIN3S\SharedKernel\Domain\Model\Identity;
+namespace LIN3S\SharedKernel\Domain\Model\Collection;
 
-use LIN3S\SharedKernel\Exception\InvalidArgumentException;
+use LIN3S\SharedKernel\Exception\Exception;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class InvalidIdException extends InvalidArgumentException
+class CollectionElementAlreadyAddedException extends Exception
 {
 }

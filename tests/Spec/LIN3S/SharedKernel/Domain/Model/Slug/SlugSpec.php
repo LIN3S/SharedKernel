@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Spec\LIN3S\SharedKernel\Domain\Model;
+namespace Spec\LIN3S\SharedKernel\Domain\Model\Slug;
 
-use LIN3S\SharedKernel\Domain\Model\Slug;
+use LIN3S\SharedKernel\Domain\Model\Slug\Slug;
 use PhpSpec\ObjectBehavior;
 
 /**

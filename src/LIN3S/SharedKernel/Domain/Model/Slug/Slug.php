@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace LIN3S\SharedKernel\Domain\Model;
+namespace LIN3S\SharedKernel\Domain\Model\Slug;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>

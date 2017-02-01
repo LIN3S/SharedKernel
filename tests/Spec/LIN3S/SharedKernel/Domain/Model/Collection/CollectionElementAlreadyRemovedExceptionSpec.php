@@ -9,24 +9,24 @@
  * file that was distributed with this source code.
  */
 
-namespace Spec\LIN3S\SharedKernel\Domain\Model;
+namespace Spec\LIN3S\SharedKernel\Domain\Model\Collection;
 
-use LIN3S\SharedKernel\Domain\Model\InvalidArgumentException;
-use LIN3S\SharedKernel\Domain\Model\InvalidCollectionElementException;
+use LIN3S\SharedKernel\Domain\Model\Collection\CollectionElementAlreadyRemovedException;
+use LIN3S\SharedKernel\Exception\Exception;
 use PhpSpec\ObjectBehavior;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class InvalidCollectionElementExceptionSpec extends ObjectBehavior
+class CollectionElementAlreadyRemovedExceptionSpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
-        $this->shouldHaveType(InvalidCollectionElementException::class);
+        $this->shouldHaveType(CollectionElementAlreadyRemovedException::class);
     }
 
     function it_extends_exception()
     {
-        $this->shouldHaveType(InvalidArgumentException::class);
+        $this->shouldHaveType(Exception::class);
     }
 }

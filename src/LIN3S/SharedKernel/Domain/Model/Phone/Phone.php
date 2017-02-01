@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace LIN3S\SharedKernel\Domain\Model;
+namespace LIN3S\SharedKernel\Domain\Model\Phone;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
@@ -35,7 +35,7 @@ class Phone
 
     public function __toString()
     {
-        return (string)$this->phone;
+        return (string) $this->phone;
     }
 
     private function setPhone($phone)
@@ -44,7 +44,7 @@ class Phone
         $numbers = preg_replace('/\D/', '', $phone);
 
         if (!$numbers) {
-            throw new PhoneFormatInvalidException();
+            throw new PhoneInvalidFormatException();
         }
 
         return $numbers;

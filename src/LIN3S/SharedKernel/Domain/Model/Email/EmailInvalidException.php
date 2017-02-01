@@ -9,11 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace LIN3S\SharedKernel\Domain\Model;
+namespace LIN3S\SharedKernel\Domain\Model\Email;
+
+use LIN3S\SharedKernel\Exception\Exception;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class InvalidArgumentException extends Exception
+class EmailInvalidException extends Exception
 {
 }

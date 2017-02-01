@@ -11,7 +11,7 @@
 
 namespace Spec\LIN3S\SharedKernel\Infrastructure\Persistence\InMemory\EventStore;
 
-use LIN3S\SharedKernel\Domain\Model\AggregateDoesNotExistException;
+use LIN3S\SharedKernel\Domain\Model\AggregateRootDoesNotExistException;
 use LIN3S\SharedKernel\Domain\Model\DomainEventCollection;
 use LIN3S\SharedKernel\Domain\Model\Identity\Id;
 use LIN3S\SharedKernel\Event\EventStore;
@@ -62,6 +62,6 @@ class InMemoryEventStoreSpec extends ObjectBehavior
     {
         $aggregateId->__toString()->willReturn('id');
 
-        $this->shouldThrow(AggregateDoesNotExistException::class)->duringStreamOfId($aggregateId);
+        $this->shouldThrow(AggregateRootDoesNotExistException::class)->duringStreamOfId($aggregateId);
     }
 }

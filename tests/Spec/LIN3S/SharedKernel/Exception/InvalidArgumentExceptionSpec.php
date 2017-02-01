@@ -9,13 +9,23 @@
  * file that was distributed with this source code.
  */
 
-namespace LIN3S\SharedKernel\Domain\Model\Identity;
+namespace Spec\LIN3S\SharedKernel\Exception;
 
 use LIN3S\SharedKernel\Exception\InvalidArgumentException;
+use PhpSpec\ObjectBehavior;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class InvalidIdException extends InvalidArgumentException
+class InvalidArgumentExceptionSpec extends ObjectBehavior
 {
+    function it_is_initializable()
+    {
+        $this->shouldHaveType(InvalidArgumentException::class);
+    }
+
+    function it_extends_exception()
+    {
+        $this->shouldHaveType(\InvalidArgumentException::class);
+    }
 }

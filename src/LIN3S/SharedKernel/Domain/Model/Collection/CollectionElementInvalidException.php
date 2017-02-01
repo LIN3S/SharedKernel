@@ -9,11 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace LIN3S\SharedKernel\Domain\Model;
+namespace LIN3S\SharedKernel\Domain\Model\Collection;
+
+use LIN3S\SharedKernel\Exception\InvalidArgumentException;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class InvalidCollectionElementException extends InvalidArgumentException
+class CollectionElementInvalidException extends InvalidArgumentException
 {
 }

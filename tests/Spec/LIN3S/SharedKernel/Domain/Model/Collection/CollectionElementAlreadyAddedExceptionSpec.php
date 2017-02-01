@@ -9,20 +9,20 @@
  * file that was distributed with this source code.
  */
 
-namespace Spec\LIN3S\SharedKernel\Domain\Model;
+namespace Spec\LIN3S\SharedKernel\Domain\Model\Collection;
 
-use LIN3S\SharedKernel\Domain\Model\CollectionElementAlreadyRemovedException;
-use LIN3S\SharedKernel\Domain\Model\Exception;
+use LIN3S\SharedKernel\Domain\Model\Collection\CollectionElementAlreadyAddedException;
+use LIN3S\SharedKernel\Exception\Exception;
 use PhpSpec\ObjectBehavior;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class CollectionElementAlreadyRemovedExceptionSpec extends ObjectBehavior
+class CollectionElementAlreadyAddedExceptionSpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
-        $this->shouldHaveType(CollectionElementAlreadyRemovedException::class);
+        $this->shouldHaveType(CollectionElementAlreadyAddedException::class);
     }
 
     function it_extends_exception()

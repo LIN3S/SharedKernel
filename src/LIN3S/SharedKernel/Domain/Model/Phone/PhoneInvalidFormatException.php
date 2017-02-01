@@ -9,15 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace LIN3S\SharedKernel\Domain\Model;
+namespace LIN3S\SharedKernel\Domain\Model\Phone;
+
+use LIN3S\SharedKernel\Exception\Exception;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class AggregateDoesNotExistException extends Exception
+class PhoneInvalidFormatException extends Exception
 {
-    public function __construct($aggregateId)
+    public function __construct()
     {
-        parent::__construct(sprintf('Does not exist any aggregate with "%s" id', $aggregateId));
+        parent::__construct('Invalid phone format');
     }
 }

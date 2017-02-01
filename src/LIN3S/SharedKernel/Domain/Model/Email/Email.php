@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace LIN3S\SharedKernel\Domain\Model;
+namespace LIN3S\SharedKernel\Domain\Model\Email;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
@@ -47,11 +47,11 @@ class Email
 
     public function equals(Email $anEmail)
     {
-        return strtolower((string)$this) === strtolower((string)$anEmail);
+        return strtolower((string) $this) === strtolower((string) $anEmail);
     }
 
     public function __toString()
     {
-        return (string)$this->email;
+        return (string) $this->email;
     }
 }

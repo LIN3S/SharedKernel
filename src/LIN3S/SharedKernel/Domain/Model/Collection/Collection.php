@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace LIN3S\SharedKernel\Domain\Model;
+namespace LIN3S\SharedKernel\Domain\Model\Collection;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -51,7 +51,7 @@ abstract class Collection extends ArrayCollection
                 || (get_class($element) === $this->type())
             )
         ) {
-            throw new InvalidCollectionElementException();
+            throw new CollectionElementInvalidException();
         }
 
         return $element;

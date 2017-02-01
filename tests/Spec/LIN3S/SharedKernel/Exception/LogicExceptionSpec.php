@@ -9,24 +9,23 @@
  * file that was distributed with this source code.
  */
 
-namespace Spec\LIN3S\SharedKernel\Domain\Model;
+namespace Spec\LIN3S\SharedKernel\Exception;
 
-use LIN3S\SharedKernel\Domain\Model\Exception;
-use LIN3S\SharedKernel\Domain\Model\InvalidArgumentException;
+use LIN3S\SharedKernel\Exception\LogicException;
 use PhpSpec\ObjectBehavior;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class InvalidArgumentExceptionSpec extends ObjectBehavior
+class LogicExceptionSpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
-        $this->shouldHaveType(InvalidArgumentException::class);
+        $this->shouldHaveType(LogicException::class);
     }
 
-    function it_extends_exception()
+    function it_extends_php_exception()
     {
-        $this->shouldHaveType(Exception::class);
+        $this->shouldHaveType(\LogicException::class);
     }
 }
