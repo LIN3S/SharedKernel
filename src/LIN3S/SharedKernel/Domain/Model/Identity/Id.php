@@ -18,6 +18,11 @@ abstract class Id implements BaseId
 {
     protected $id;
 
+    public static function generate($id = null)
+    {
+        return new static($id);
+    }
+
     protected function __construct($id = null)
     {
         if ($id !== null && !is_scalar($id)) {
@@ -38,6 +43,6 @@ abstract class Id implements BaseId
 
     public function __toString()
     {
-        return (string) $this->id;
+        return (string)$this->id;
     }
 }
