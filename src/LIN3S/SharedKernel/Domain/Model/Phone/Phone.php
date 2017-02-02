@@ -46,6 +46,9 @@ class Phone
         if (!$numbers) {
             throw new PhoneInvalidFormatException();
         }
+        if (!preg_match('/^[0-9]{2,3}-? ?[0-9]{6,7}/', $numbers)) {
+            throw new PhoneInvalidFormatException();
+        }
 
         return $numbers;
     }
