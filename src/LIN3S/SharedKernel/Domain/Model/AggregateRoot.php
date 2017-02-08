@@ -16,35 +16,5 @@ namespace LIN3S\SharedKernel\Domain\Model;
  */
 abstract class AggregateRoot
 {
-    private $recordedEvents = [];
-
-    public function recordedEvents()
-    {
-        return $this->recordedEvents;
-    }
-
-    public function clearEvents()
-    {
-        $this->recordedEvents = [];
-    }
-
-    protected function publish(DomainEvent $event)
-    {
-        $this->apply($event);
-        $this->record($event);
-    }
-
-    protected function apply(DomainEvent $event)
-    {
-        $modifier = 'apply' . array_reverse(explode('\\', get_class($event)))[0];
-        if (!method_exists($this, $modifier)) {
-            return;
-        }
-        $this->$modifier($event);
-    }
-
-    private function record(DomainEvent $event)
-    {
-        $this->recordedEvents[] = $event;
-    }
+    use AggregateRootCapabilities;
 }
