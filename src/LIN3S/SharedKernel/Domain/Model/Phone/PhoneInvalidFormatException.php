@@ -9,17 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace LIN3S\SharedKernel\Tests\Double\Domain\Model\Identity;
+namespace LIN3S\SharedKernel\Domain\Model\Phone;
 
-use LIN3S\SharedKernel\Domain\Model\Identity\Id;
+use LIN3S\SharedKernel\Exception\Exception;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class IdStub extends Id
+class PhoneInvalidFormatException extends Exception
 {
-    public static function generate($id = null)
+    public function __construct()
     {
-        return new self($id);
+        parent::__construct('Invalid phone format');
     }
 }

@@ -3,16 +3,15 @@
 /*
  * This file is part of the Shared Kernel library.
  *
- * Copyright (c) 2016 LIN3S <info@lin3s.com>
+ * Copyright (c) 2016-2017 LIN3S <info@lin3s.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Spec\LIN3S\SharedKernel\Domain\Model;
+namespace Spec\LIN3S\SharedKernel\Exception;
 
-use LIN3S\SharedKernel\Domain\Model\Exception;
-use LIN3S\SharedKernel\Domain\Model\InvalidArgumentException;
+use LIN3S\SharedKernel\Exception\InvalidArgumentException;
 use PhpSpec\ObjectBehavior;
 
 /**
@@ -27,6 +26,6 @@ class InvalidArgumentExceptionSpec extends ObjectBehavior
 
     function it_extends_exception()
     {
-        $this->shouldHaveType(Exception::class);
+        $this->shouldHaveType(\InvalidArgumentException::class);
     }
 }

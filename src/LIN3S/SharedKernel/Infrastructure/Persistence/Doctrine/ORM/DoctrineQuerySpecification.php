@@ -3,7 +3,7 @@
 /*
  * This file is part of the Shared Kernel library.
  *
- * Copyright (c) 2016 LIN3S <info@lin3s.com>
+ * Copyright (c) 2016-2017 LIN3S <info@lin3s.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,12 +11,12 @@
 
 namespace LIN3S\SharedKernel\Infrastructure\Persistence\Doctrine\ORM;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
 interface DoctrineQuerySpecification
 {
-    public function buildQuery(EntityManager $manager);
+    public function buildQuery(QueryBuilder $queryBuilder);
 }

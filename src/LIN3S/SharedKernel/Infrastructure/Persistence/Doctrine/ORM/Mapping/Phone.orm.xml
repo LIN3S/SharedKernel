@@ -4,7 +4,7 @@
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                           http://raw.github.com/doctrine/doctrine2/master/doctrine-mapping.xsd">
 
-    <embeddable name="LIN3S\SharedKernel\Domain\Model\Phone">
-        <field name="phone" type="string" length="20"/>
+    <embeddable name="LIN3S\SharedKernel\Domain\Model\Phone\Phone">
+        <field name="phone" type="string" length="20" nullable="true"/>
     </embeddable>
 </doctrine-mapping>

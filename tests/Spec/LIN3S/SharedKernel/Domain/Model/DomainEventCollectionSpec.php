@@ -3,7 +3,7 @@
 /*
  * This file is part of the Shared Kernel library.
  *
- * Copyright (c) 2016 LIN3S <info@lin3s.com>
+ * Copyright (c) 2016-2017 LIN3S <info@lin3s.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,12 +12,12 @@
 namespace Spec\LIN3S\SharedKernel\Domain\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use LIN3S\SharedKernel\Domain\Model\Collection;
-use LIN3S\SharedKernel\Domain\Model\CollectionElementAlreadyAddedException;
-use LIN3S\SharedKernel\Domain\Model\CollectionElementAlreadyRemovedException;
+use LIN3S\SharedKernel\Domain\Model\Collection\Collection;
+use LIN3S\SharedKernel\Domain\Model\Collection\CollectionElementAlreadyAddedException;
+use LIN3S\SharedKernel\Domain\Model\Collection\CollectionElementAlreadyRemovedException;
+use LIN3S\SharedKernel\Domain\Model\Collection\CollectionElementInvalidException;
 use LIN3S\SharedKernel\Domain\Model\DomainEvent;
 use LIN3S\SharedKernel\Domain\Model\DomainEventCollection;
-use LIN3S\SharedKernel\Domain\Model\InvalidCollectionElementException;
 use PhpSpec\ObjectBehavior;
 
 /**
@@ -43,12 +43,12 @@ class DomainEventCollectionSpec extends ObjectBehavior
     function it_creates_collection_with_an_invalid_element()
     {
         $this->beConstructedWith(['a-scalar-element']);
-        $this->shouldThrow(InvalidCollectionElementException::class)->duringInstantiation();
+        $this->shouldThrow(CollectionElementInvalidException::class)->duringInstantiation();
     }
 
     function it_adds_to_collection_an_invalid_element()
     {
-        $this->shouldThrow(InvalidCollectionElementException::class)->duringAdd('a-scalar-element');
+        $this->shouldThrow(CollectionElementInvalidException::class)->duringAdd('a-scalar-element');
     }
 
     function it_creates_collection_with_elements(DomainEvent $element, DomainEvent $element2)

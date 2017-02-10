@@ -9,17 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace LIN3S\SharedKernel\Tests\Double\Domain\Model\Identity;
-
-use LIN3S\SharedKernel\Domain\Model\Identity\Id;
+namespace LIN3S\SharedKernel\Exception;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class IdStub extends Id
+class InvalidArgumentException extends \InvalidArgumentException
 {
-    public static function generate($id = null)
-    {
-        return new self($id);
-    }
 }

@@ -9,25 +9,23 @@
  * file that was distributed with this source code.
  */
 
-namespace LIN3S\SharedKernel\Domain\Model\Identity;
+namespace Spec\LIN3S\SharedKernel\Exception;
 
-use Ramsey\Uuid\Uuid as BaseUuid;
+use LIN3S\SharedKernel\Exception\Exception;
+use PhpSpec\ObjectBehavior;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-final class Uuid
+class ExceptionSpec extends ObjectBehavior
 {
-    public static function generate()
+    function it_is_initializable()
     {
-        return BaseUuid::uuid4()->toString();
+        $this->shouldHaveType(Exception::class);
     }
 
-    private function __construct()
+    function it_extends_php_exception()
     {
-    }
-
-    private function __clone()
-    {
+        $this->shouldHaveType(\Exception::class);
     }
 }

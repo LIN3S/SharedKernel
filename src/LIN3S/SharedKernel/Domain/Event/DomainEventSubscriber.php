@@ -9,17 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace LIN3S\SharedKernel\Tests\Double\Domain\Model\Identity;
+namespace LIN3S\SharedKernel\Domain\Event;
 
-use LIN3S\SharedKernel\Domain\Model\Identity\Id;
+use LIN3S\SharedKernel\Domain\Model\DomainEvent;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class IdStub extends Id
+interface DomainEventSubscriber
 {
-    public static function generate($id = null)
-    {
-        return new self($id);
-    }
+    public function handle(DomainEvent $aDomainEvent);
+
+    public function isSubscribedTo(DomainEvent $anEvent);
 }
