@@ -14,9 +14,7 @@ namespace LIN3S\SharedKernel\Domain\Model;
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-interface AggregateRoot
+abstract class BaseAggregateRoot implements AggregateRoot
 {
-    public function recordedEvents();
-
-    public function clearEvents();
+    use AggregateRootCapabilities;
 }
