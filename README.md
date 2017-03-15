@@ -9,5 +9,5 @@
 [![Latest Stable Version](https://poser.pugx.org/lin3s/shared-kernel/v/stable.svg)](https://packagist.org/packages/lin3s/shared-kernel)
 [![Latest Unstable Version](https://poser.pugx.org/lin3s/shared-kernel/v/unstable.svg)](https://packagist.org/packages/lin3s/shared-kernel)
 
-##Licensing Options
+## Licensing Options
 [![License](https://poser.pugx.org/lin3s/shared-kernel/license.svg)](https://github.com/LIN3S/SharedKernel/blob/master/LICENSE)
