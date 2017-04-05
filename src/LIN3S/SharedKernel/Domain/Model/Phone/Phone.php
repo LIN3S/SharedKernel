@@ -11,6 +11,10 @@
 
 namespace LIN3S\SharedKernel\Domain\Model\Phone;
 
+use libphonenumber\NumberParseException;
+use libphonenumber\PhoneNumberFormat;
+use libphonenumber\PhoneNumberUtil;
+
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
@@ -18,38 +22,62 @@ class Phone
 {
     private $phone;
 
-    public function __construct($phone)
+    public static function fromInternatinal($phone)
     {
-        $this->phone = $this->setPhone($phone);
+        return new self($phone);
     }
 
-    public function phone()
+    public static function fromRegion($region, $phone)
     {
-        return $this->phone;
+        return new self($phone, $region);
+    }
+
+    public static function fromSpain($phone)
+    {
+        return new self($phone, 'ES');
+    }
+
+    private function __construct($phone, $region = null)
+    {
+        $this->setPhone($phone, $region);
     }
 
     public function equals(Phone $phone)
     {
-        return $this->phone === $phone->phone();
+        return $this->phone->phone() === $phone->phone();
+    }
+
+    public function phone()
+    {
+        return PhoneNumberUtil::getInstance()->format($this->phone, PhoneNumberFormat::E164);
+    }
+
+    public function phoneCallingFrom($region)
+    {
+        return PhoneNumberUtil::getInstance()->formatOutOfCountryCallingNumber($this->phoneNumber, $regionCode);
     }
 
     public function __toString()
     {
-        return (string) $this->phone;
+        return (string) $this->phone();
     }
 
-    private function setPhone($phone)
+    private function setPhone($phone, $region = null)
     {
-        $phone = str_replace('+34', '', $phone);
-        $numbers = preg_replace('/\D/', '', $phone);
+        try {
+            $this->phone = PhoneNumberUtil::getInstance()->parse($phone, $region);
+            $this->checkIsValidNumber($this->phone);
+        } catch (NumberParseException $exception) {
+            throw new PhoneInvalidFormatException(
+                $exception->getMessage()
+            );
+        }
+    }
 
-        if (!$numbers) {
+    private function checkIsValidNumber($phone, $region = null)
+    {
+        if (!PhoneNumberUtil::getInstance()->isValidNumber($this->phone)) {
             throw new PhoneInvalidFormatException();
         }
-        if (!preg_match('/^[0-9]{2,3}-? ?[0-9]{6,7}/', $numbers)) {
-            throw new PhoneInvalidFormatException();
-        }
-
-        return $numbers;
     }
 }

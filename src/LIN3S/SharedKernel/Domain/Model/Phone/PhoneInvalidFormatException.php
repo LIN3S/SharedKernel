@@ -18,8 +18,8 @@ use LIN3S\SharedKernel\Exception\Exception;
  */
 class PhoneInvalidFormatException extends Exception
 {
-    public function __construct()
+    public function __construct($message = 'Invalid phone format')
     {
-        parent::__construct('Invalid phone format');
+        parent::__construct($message);
     }
 }
