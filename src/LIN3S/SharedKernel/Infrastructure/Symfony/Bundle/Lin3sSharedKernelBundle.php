@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the CMS Kernel package.
+ * This file is part of the Shared Kernel library.
  *
  * Copyright (c) 2016-present LIN3S <info@lin3s.com>
  *

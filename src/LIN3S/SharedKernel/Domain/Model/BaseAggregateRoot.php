@@ -9,13 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace LIN3S\SharedKernel\Domain\Model\Collection;
-
-use LIN3S\SharedKernel\Exception\Exception;
+namespace LIN3S\SharedKernel\Domain\Model;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class CollectionElementAlreadyRemovedException extends Exception
+abstract class BaseAggregateRoot implements AggregateRoot
 {
+    use AggregateRootCapabilities;
 }
