@@ -41,6 +41,12 @@ class Lin3sSharedKernelBundle extends Bundle
                         'dir'       => $this->basePath() . '/Slug/Mapping/',
                         'prefix'    => 'LIN3S\SharedKernel\Domain\Model\Slug',
                     ],
+                    'Lin3sSharedKernelZipCode' => [
+                        'type'      => 'xml',
+                        'is_bundle' => false,
+                        'dir'       => $this->basePath() . '/ZipCode/Mapping/',
+                        'prefix'    => 'LIN3S\SharedKernel\Domain\Model\ZipCode',
+                    ],
                 ],
             ],
         ]);

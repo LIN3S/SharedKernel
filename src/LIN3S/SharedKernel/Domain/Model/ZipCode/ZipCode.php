@@ -35,6 +35,11 @@ class ZipCode
         return $this->zipCode;
     }
 
+    public function equals(ZipCode $zipCode)
+    {
+        return $this->zipCode() === $zipCode->zipCode();
+    }
+
     public function __toString()
     {
         return (string) $this->zipCode();
