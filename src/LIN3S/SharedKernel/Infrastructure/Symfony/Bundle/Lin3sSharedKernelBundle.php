@@ -29,17 +29,23 @@ class Lin3sSharedKernelBundle extends Bundle
         $container->loadFromExtension('doctrine', [
             'orm' => [
                 'mappings' => [
-                    'Lin3sSharedKernelEmail' => [
+                    'Lin3sSharedKernelEmail'   => [
                         'type'      => 'xml',
                         'is_bundle' => false,
                         'dir'       => $this->basePath() . '/Email/Mapping/',
                         'prefix'    => 'LIN3S\SharedKernel\Domain\Model\Email',
                     ],
-                    'Lin3sSharedKernelSlug'  => [
+                    'Lin3sSharedKernelSlug'    => [
                         'type'      => 'xml',
                         'is_bundle' => false,
                         'dir'       => $this->basePath() . '/Slug/Mapping/',
                         'prefix'    => 'LIN3S\SharedKernel\Domain\Model\Slug',
+                    ],
+                    'Lin3sSharedKernelLocale'  => [
+                        'type'      => 'xml',
+                        'is_bundle' => false,
+                        'dir'       => $this->basePath() . '/Locale/Mapping/',
+                        'prefix'    => 'LIN3S\SharedKernel\Domain\Model\Locale',
                     ],
                     'Lin3sSharedKernelZipCode' => [
                         'type'      => 'xml',

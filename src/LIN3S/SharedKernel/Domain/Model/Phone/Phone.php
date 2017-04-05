@@ -44,7 +44,7 @@ class Phone
 
     public function equals(Phone $phone)
     {
-        return $this->phone->phone() === $phone->phone();
+        return $this->phone() === $phone->phone();
     }
 
     public function phone()
