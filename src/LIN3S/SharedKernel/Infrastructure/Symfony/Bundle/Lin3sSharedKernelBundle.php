@@ -11,6 +11,9 @@
 
 namespace LIN3S\SharedKernel\Infrastructure\Symfony\Bundle;
 
+use LIN3S\SharedKernel\Infrastructure\Persistence\Doctrine\ORM\Types\PhoneType;
+use LIN3S\SharedKernel\Infrastructure\Symfony\Bundle\DependencyInjection\Compiler\DoctrineORMCustomTypesPass;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -21,6 +24,8 @@ class Lin3sSharedKernelBundle extends Bundle
 {
     public function build(ContainerBuilder $container)
     {
+        $container->addCompilerPass(new DoctrineORMCustomTypesPass(), PassConfig::TYPE_OPTIMIZE);
+
         $container->loadFromExtension('doctrine', [
             'orm' => [
                 'mappings' => [
@@ -35,12 +40,6 @@ class Lin3sSharedKernelBundle extends Bundle
                         'is_bundle' => false,
                         'dir'       => $this->basePath() . '/Slug/Mapping/',
                         'prefix'    => 'LIN3S\SharedKernel\Domain\Model\Slug',
-                    ],
-                    'Lin3sSharedKernelPhone' => [
-                        'type'      => 'xml',
-                        'is_bundle' => false,
-                        'dir'       => $this->basePath() . '/Phone/Mapping/',
-                        'prefix'    => 'LIN3S\SharedKernel\Domain\Model\Phone',
                     ],
                 ],
             ],
