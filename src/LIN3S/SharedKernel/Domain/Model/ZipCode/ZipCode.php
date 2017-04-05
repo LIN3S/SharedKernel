@@ -55,8 +55,8 @@ class ZipCode
 
     private function checkZipCodeIsCorrect($zipCode, $iso)
     {
-        if ((new Validator())->validate($iso, $zipCode)) {
-            throw new ZipCodeInvalidException();
+        if (!(new Validator())->validate($iso, $zipCode)) {
+            throw new ZipCodeInvalidException($zipCode, $iso);
         }
     }
 }
