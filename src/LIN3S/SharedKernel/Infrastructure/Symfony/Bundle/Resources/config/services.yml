@@ -1,0 +1,37 @@
+# This file is part of the Shared Kernel library.
+#
+# Copyright (c) 2016-present LIN3S <info@lin3s.com>
+#
+# For the full copyright and license information, please view the LICENSE
+# file that was distributed with this source code.
+
+services:
+    sql.connection_factory:
+        class: LIN3S\SharedKernel\Infrastructure\Persistence\Sql\ConnectionFactory
+        public: false
+        arguments:
+            - "%database_driver%"
+            - "%database_name%"
+            - "%database_host%"
+            - "%database_port%"
+            - "%database_user%"
+            - "%database_password%"
+
+    sql.client:
+        class: \PDO
+        factory: "sql.connection_factory:createConnection"
+
+    lin3s.persistence.sql.pdo:
+        class: LIN3S\SharedKernel\Infrastructure\Persistence\Sql\Pdo
+        arguments:
+            - "@sql.client"
+
+    lin3s.application.tactician_command_bus:
+        class: LIN3S\SharedKernel\Infrastructure\Application\Tactician\TacticianCommandBus
+        arguments:
+            - "@tactician.commandbus"
+
+    lin3s.tactician_middleware.pdo_transaction:
+        class: LIN3S\SharedKernel\Infrastructure\Application\Tactician\PdoTransactionMiddleware
+        arguments:
+            - "@lin3s.persistence.sql.pdo"

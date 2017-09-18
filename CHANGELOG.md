@@ -6,6 +6,7 @@ To get the diff for a specific change, go to https://github.com/LIN3S/SharedKern
 To get the diff between two versions, go to https://github.com/LIN3S/SharedKernel/compare/v0.2.0...v0.3.0
 
 * 0.4.0
+    * Added support for Tactician command bus with PDO middleware.
     * Added locale value object.
     * Added zip code and phone value objects.
 * 0.3.0
