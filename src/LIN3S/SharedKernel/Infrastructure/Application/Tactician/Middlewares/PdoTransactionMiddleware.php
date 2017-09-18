@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace LIN3S\SharedKernel\Infrastructure\Application\Tactician;
+namespace LIN3S\SharedKernel\Infrastructure\Application\Tactician\Middleware;
 
 use League\Tactician\Middleware;
 use LIN3S\SharedKernel\Exception\Exception;

@@ -32,6 +32,9 @@ services:
             - "@tactician.commandbus"
 
     lin3s.tactician_middleware.pdo_transaction:
-        class: LIN3S\SharedKernel\Infrastructure\Application\Tactician\PdoTransactionMiddleware
+        class: LIN3S\SharedKernel\Infrastructure\Application\Tactician\Middleware\PdoTransactionMiddleware
         arguments:
             - "@lin3s.persistence.sql.pdo"
+
+    lin3s.tactician_middleware.domain_events_publication:
+        class: LIN3S\SharedKernel\Infrastructure\Application\Tactician\Middleware\DomainEventsPublicationMiddleware
