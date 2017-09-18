@@ -11,6 +11,9 @@
 
 namespace LIN3S\SharedKernel\Infrastructure\Symfony\Bundle;
 
+use LIN3S\SharedKernel\Infrastructure\Persistence\Doctrine\ORM\Types\PhoneType;
+use LIN3S\SharedKernel\Infrastructure\Symfony\Bundle\DependencyInjection\Compiler\DoctrineORMCustomTypesPass;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -21,26 +24,34 @@ class Lin3sSharedKernelBundle extends Bundle
 {
     public function build(ContainerBuilder $container)
     {
+        $container->addCompilerPass(new DoctrineORMCustomTypesPass(), PassConfig::TYPE_OPTIMIZE);
+
         $container->loadFromExtension('doctrine', [
             'orm' => [
                 'mappings' => [
-                    'Lin3sSharedKernelEmail' => [
+                    'Lin3sSharedKernelEmail'   => [
                         'type'      => 'xml',
                         'is_bundle' => false,
                         'dir'       => $this->basePath() . '/Email/Mapping/',
                         'prefix'    => 'LIN3S\SharedKernel\Domain\Model\Email',
                     ],
-                    'Lin3sSharedKernelSlug'  => [
+                    'Lin3sSharedKernelSlug'    => [
                         'type'      => 'xml',
                         'is_bundle' => false,
                         'dir'       => $this->basePath() . '/Slug/Mapping/',
                         'prefix'    => 'LIN3S\SharedKernel\Domain\Model\Slug',
                     ],
-                    'Lin3sSharedKernelPhone' => [
+                    'Lin3sSharedKernelLocale'  => [
                         'type'      => 'xml',
                         'is_bundle' => false,
-                        'dir'       => $this->basePath() . '/Phone/Mapping/',
-                        'prefix'    => 'LIN3S\SharedKernel\Domain\Model\Phone',
+                        'dir'       => $this->basePath() . '/Locale/Mapping/',
+                        'prefix'    => 'LIN3S\SharedKernel\Domain\Model\Locale',
+                    ],
+                    'Lin3sSharedKernelZipCode' => [
+                        'type'      => 'xml',
+                        'is_bundle' => false,
+                        'dir'       => $this->basePath() . '/ZipCode/Mapping/',
+                        'prefix'    => 'LIN3S\SharedKernel\Domain\Model\ZipCode',
                     ],
                 ],
             ],
