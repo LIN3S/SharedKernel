@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace LIN3S\SharedKernel\Infrastructure\Application\Tactician\Middleware;
+namespace LIN3S\SharedKernel\Infrastructure\Application\Tactician\Middlewares;
 
 use League\Tactician\Middleware;
-use LIN3S\SharedKernel\Domain\Event\CollectlDomainEventsSubscriber;
+use LIN3S\SharedKernel\Domain\Event\CollectDomainEventsSubscriber;
 use LIN3S\SharedKernel\Domain\Event\DomainEventPublisher;
 
 /**
@@ -23,7 +23,7 @@ class DomainEventsPublicationMiddleware implements Middleware
     public function execute($command, callable $next)
     {
         $domainEventPublisher = DomainEventPublisher::instance();
-        $collectDomainEventsSubscriber = new CollectlDomainEventsSubscriber();
+        $collectDomainEventsSubscriber = new CollectDomainEventsSubscriber();
         $domainEventPublisher->subscribe($collectDomainEventsSubscriber);
 
         $returnValue = $next($command);

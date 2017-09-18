@@ -16,7 +16,7 @@ use LIN3S\SharedKernel\Domain\Model\DomainEvent;
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class CollectlDomainEventsSubscriber implements DomainEventSubscriber
+class CollectDomainEventsSubscriber implements DomainEventSubscriber
 {
     private $events;
 
