@@ -11,14 +11,11 @@
 
 namespace LIN3S\SharedKernel\Domain\Event;
 
-use LIN3S\SharedKernel\Domain\Model\DomainEvent;
+use LIN3S\SharedKernel\Exception\Exception;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-interface DomainEventSubscriber
+class DomainEventPublisherCloningIsNotAllowed extends Exception
 {
-    public function handle(DomainEvent $domainEvent);
-
-    public function isSubscribedTo(DomainEvent $domainEvent);
 }
