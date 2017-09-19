@@ -12,7 +12,6 @@
 namespace LIN3S\SharedKernel\Infrastructure\Application\Tactician\Middlewares;
 
 use League\Tactician\Middleware;
-use LIN3S\SharedKernel\Exception\Exception;
 use LIN3S\SharedKernel\Infrastructure\Persistence\Sql\Pdo;
 
 /**
@@ -35,7 +34,7 @@ class PdoTransactionMiddleware implements Middleware
             $returnValue = $next($command);
 
             $this->pdo->commit();
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             $this->pdo->rollBack();
 
             throw $exception;
