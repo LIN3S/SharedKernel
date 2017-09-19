@@ -40,6 +40,11 @@ final class Pdo
         $this->pdo->rollBack();
     }
 
+    public function nextIdentity()
+    {
+        return $this->pdo->lastInsertId();
+    }
+
     public function execute($sql, array $parameters)
     {
         $statement = $this->pdo->prepare($sql);

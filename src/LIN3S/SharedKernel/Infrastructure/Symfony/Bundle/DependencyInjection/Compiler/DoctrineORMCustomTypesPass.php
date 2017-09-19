@@ -11,7 +11,7 @@
 
 namespace LIN3S\SharedKernel\Infrastructure\Symfony\Bundle\DependencyInjection\Compiler;
 
-use LIN3S\SharedKernel\Infrastructure\Persistence\Doctrine\ORM\Phone\Types\PhoneType;
+use LIN3S\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Domain\Model\Phone\Types\PhoneType;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 

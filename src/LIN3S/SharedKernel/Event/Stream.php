@@ -17,20 +17,20 @@ use LIN3S\SharedKernel\Domain\Model\Identity\Id;
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class EventStream
+class Stream
 {
-    private $aggregateId;
+    private $name;
     private $events;
 
-    public function __construct(Id $aggregateId, DomainEventCollection $events)
+    public function __construct(StreamName $name, DomainEventCollection $events)
     {
-        $this->aggregateId = $aggregateId;
+        $this->name = $name;
         $this->events = $events;
     }
 
-    public function aggregateId()
+    public function name()
     {
-        return $this->aggregateId;
+        return $this->name;
     }
 
     public function events()

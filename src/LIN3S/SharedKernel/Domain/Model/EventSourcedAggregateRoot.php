@@ -11,12 +11,12 @@
 
 namespace LIN3S\SharedKernel\Domain\Model;
 
-use LIN3S\SharedKernel\Event\EventStream;
+use LIN3S\SharedKernel\Event\Stream;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
 interface EventSourcedAggregateRoot
 {
-    public static function reconstitute(EventStream $events);
+    public static function reconstitute(Stream $events);
 }

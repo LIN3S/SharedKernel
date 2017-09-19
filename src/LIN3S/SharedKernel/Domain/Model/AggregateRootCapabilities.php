@@ -11,6 +11,8 @@
 
 namespace LIN3S\SharedKernel\Domain\Model;
 
+use LIN3S\SharedKernel\Domain\Event\DomainEventPublisher;
+
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
@@ -32,6 +34,7 @@ trait AggregateRootCapabilities
     {
         $this->apply($event);
         $this->record($event);
+        DomainEventPublisher::instance()->publish($event);
     }
 
     protected function apply(DomainEvent $event)

@@ -18,7 +18,7 @@ use LIN3S\SharedKernel\Domain\Model\Identity\Id;
  */
 interface EventStore
 {
-    public function appendTo(EventStream $events);
+    public function append(Stream $events);
 
-    public function streamOfId(Id $aggregateId);
+    public function streamOfName(StreamName $name);
 }

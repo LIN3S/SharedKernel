@@ -26,15 +26,25 @@ services:
         arguments:
             - "@sql.client"
 
+    lin3s.persistence.doctrine.orm.event_store:
+        class: LIN3S\SharedKernel\Infrastructure\Persistence\Doctrine\ORM\Event\DoctrineORMEventStore
+        factory:
+            - "@doctrine.orm.default_entity_manager"
+            - "getRepository"
+        arguments:
+            - LIN3S\SharedKernel\Event\StoredEvent
+
     lin3s.application.tactician_command_bus:
         class: LIN3S\SharedKernel\Infrastructure\Application\Tactician\TacticianCommandBus
         arguments:
             - "@tactician.commandbus"
 
     lin3s.tactician_middleware.pdo_transaction:
-        class: LIN3S\SharedKernel\Infrastructure\Application\Tactician\Middleware\PdoTransactionMiddleware
+        class: LIN3S\SharedKernel\Infrastructure\Application\Tactician\Middlewares\PdoTransactionMiddleware
         arguments:
             - "@lin3s.persistence.sql.pdo"
 
     lin3s.tactician_middleware.domain_events_publication:
-        class: LIN3S\SharedKernel\Infrastructure\Application\Tactician\Middleware\DomainEventsPublicationMiddleware
+        class: LIN3S\SharedKernel\Infrastructure\Application\Tactician\Middlewares\DomainEventsPublicationMiddleware
+        arguments:
+            - "@lin3s.persistence.doctrine.orm.event_store"

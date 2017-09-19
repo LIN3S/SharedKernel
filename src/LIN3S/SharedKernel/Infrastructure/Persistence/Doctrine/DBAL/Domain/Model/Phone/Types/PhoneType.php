@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace LIN3S\SharedKernel\Infrastructure\Persistence\Doctrine\ORM\Phone\Types;
+namespace LIN3S\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Domain\Model\Phone\Types;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\TextType;
