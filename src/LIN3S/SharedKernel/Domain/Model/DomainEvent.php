@@ -18,5 +18,5 @@ namespace LIN3S\SharedKernel\Domain\Model;
  */
 interface DomainEvent
 {
-    public function occurredOn();
+    public function occurredOn() : int;
 }

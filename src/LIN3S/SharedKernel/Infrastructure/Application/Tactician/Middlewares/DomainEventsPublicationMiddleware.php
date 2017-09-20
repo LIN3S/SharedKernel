@@ -15,7 +15,7 @@ namespace LIN3S\SharedKernel\Infrastructure\Application\Tactician\Middlewares;
 
 use App\Domain\Model\Post\PublicProject\Participant\ParticipantId;
 use League\Tactician\Middleware;
-use LIN3S\SharedKernel\Domain\Event\CollectDomainEventsSubscriber;
+use LIN3S\SharedKernel\Domain\Event\CollectInMemoryDomainEventsSubscriber;
 use LIN3S\SharedKernel\Domain\Event\DomainEventPublisher;
 use LIN3S\SharedKernel\Domain\Model\DomainEventCollection;
 use LIN3S\SharedKernel\Event\EventStore;
@@ -37,7 +37,7 @@ class DomainEventsPublicationMiddleware implements Middleware
     public function execute($command, callable $next)
     {
         $domainEventPublisher = DomainEventPublisher::instance();
-        $collectDomainEventsSubscriber = new CollectDomainEventsSubscriber();
+        $collectDomainEventsSubscriber = new CollectInMemoryDomainEventsSubscriber();
         $domainEventPublisher->subscribe($collectDomainEventsSubscriber);
 
         $returnValue = $next($command);

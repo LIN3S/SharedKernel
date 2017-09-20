@@ -18,5 +18,5 @@ namespace LIN3S\SharedKernel\Application;
  */
 interface CommandBus
 {
-    public function handle($command);
+    public function handle($command) : void;
 }
