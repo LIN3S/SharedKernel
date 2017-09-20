@@ -5,34 +5,14 @@
 # For the full copyright and license information, please view the LICENSE
 # file that was distributed with this source code.
 
+imports:
+    - { resource: services/sql.yml }
+
 services:
-    sql.connection_factory:
-        class: LIN3S\SharedKernel\Infrastructure\Persistence\Sql\ConnectionFactory
-        public: false
+    lin3s.persistence.sql.event_store:
+        class: LIN3S\SharedKernel\Infrastructure\Persistence\Sql\Event\SqlEventStore
         arguments:
-            - "%database_driver%"
-            - "%database_name%"
-            - "%database_host%"
-            - "%database_port%"
-            - "%database_user%"
-            - "%database_password%"
-
-    sql.client:
-        class: \PDO
-        factory: "sql.connection_factory:createConnection"
-
-    lin3s.persistence.sql.pdo:
-        class: LIN3S\SharedKernel\Infrastructure\Persistence\Sql\Pdo
-        arguments:
-            - "@sql.client"
-
-    lin3s.persistence.doctrine.orm.event_store:
-        class: LIN3S\SharedKernel\Infrastructure\Persistence\Doctrine\ORM\Event\DoctrineORMEventStore
-        factory:
-            - "@doctrine.orm.default_entity_manager"
-            - "getRepository"
-        arguments:
-            - LIN3S\SharedKernel\Event\StoredEvent
+            - "@lin3s.persistence.sql.pdo"
 
     lin3s.application.tactician_command_bus:
         class: LIN3S\SharedKernel\Infrastructure\Application\Tactician\TacticianCommandBus
@@ -47,4 +27,4 @@ services:
     lin3s.tactician_middleware.domain_events_publication:
         class: LIN3S\SharedKernel\Infrastructure\Application\Tactician\Middlewares\DomainEventsPublicationMiddleware
         arguments:
-            - "@lin3s.persistence.doctrine.orm.event_store"
+            - "@lin3s.persistence.sql.event_store"

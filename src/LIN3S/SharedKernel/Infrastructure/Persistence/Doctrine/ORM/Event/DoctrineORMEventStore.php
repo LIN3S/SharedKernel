@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace LIN3S\SharedKernel\Infrastructure\Persistence\Doctrine\ORM\Event;
 
 use Doctrine\ORM\EntityRepository;
-use LIN3S\SharedKernel\Domain\Model\DomainEvent;
 use LIN3S\SharedKernel\Domain\Model\DomainEventCollection;
 use LIN3S\SharedKernel\Event\EventStore;
 use LIN3S\SharedKernel\Event\StoredEvent;
@@ -26,21 +25,16 @@ use LIN3S\SharedKernel\Event\StreamName;
  */
 class DoctrineORMEventStore extends EntityRepository implements EventStore
 {
-    public function append(Stream $stream)
+    public function append(Stream $stream) : void
     {
         foreach ($stream->events() as $event) {
             $this->getEntityManager()->persist(
-                new StoredEvent(
-                    get_class($event),
-                    $this->encodePayload($event),
-                    $event->occurredOn(),
-                    $stream->name()
-                )
+                StoredEvent::fromDomainEvent($event, $stream)
             );
         }
     }
 
-    public function streamOfName(StreamName $name)
+    public function streamOfName(StreamName $name) : Stream
     {
         $storedEventsCollection = $this->findBy(['stream_name' => $name->name()]);
         $storedEvents = $storedEventsCollection->toArray();
@@ -49,23 +43,7 @@ class DoctrineORMEventStore extends EntityRepository implements EventStore
         return new Stream($name, $events);
     }
 
-    private function encodePayload(DomainEvent $event)
-    {
-        $payload = [];
-        $eventReflection = new \ReflectionClass($event);
-        foreach ($eventReflection->getProperties() as $property) {
-            if ('occurredOn' === $property->name) {
-                continue;
-            }
-
-            $property->setAccessible(true);
-            $payload[$property->getName()] = $property->getValue($event);
-        }
-
-        return json_encode($payload);
-    }
-
-    private function fromStoredEventsToDomainEvents(StoredEvent ...$storedEvents)
+    private function fromStoredEventsToDomainEvents(StoredEvent ...$storedEvents) : DomainEventCollection
     {
         $domainEvents = new DomainEventCollection();
         foreach ($storedEvents as $storedEvent) {
@@ -76,7 +54,11 @@ class DoctrineORMEventStore extends EntityRepository implements EventStore
             $domainEvent = $eventReflection->newInstanceWithoutConstructor();
             foreach ($eventReflection->getProperties() as $property) {
                 $property->setAccessible(true);
-                $property->setValue($domainEvent, $payload[$property->name]);
+                if (isset($payload[$property->name])) {
+                    $property->setValue($domainEvent, $payload[$property->name]);
+                    continue;
+                }
+                $property->setValue($domainEvent, $storedEventRow[$property]);
             }
 
             $domainEvents->add($domainEvent);

@@ -18,14 +18,23 @@ use LIN3S\SharedKernel\Domain\Model\DomainEvent;
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class DomainEventPublisher
+final class DomainEventPublisher
 {
     private static $instance;
 
     private $subscribers;
-    private $id;
 
-    public static function instance()
+    private function __construct()
+    {
+        $this->subscribers = [];
+    }
+
+    public function __clone()
+    {
+        throw new DomainEventPublisherCloningIsNotAllowed();
+    }
+
+    public static function instance() : self
     {
         if (null === static::$instance) {
             static::$instance = new self();
@@ -34,36 +43,16 @@ class DomainEventPublisher
         return static::$instance;
     }
 
-    private function __construct()
+    public function subscribe(DomainEventSubscriber $domainEventSubscriber) : void
     {
-        $this->subscribers = [];
-        $this->id = 0;
+        $this->subscribers[] = $domainEventSubscriber;
     }
 
-    public function __clone()
+    public function publish(DomainEvent $domainEvent) : void
     {
-        throw new DomainEventPublisherCloningIsNotAllowed();
-    }
-
-    public function subscribe(DomainEventSubscriber $domainEventSubscriber)
-    {
-        $id = $this->id;
-        $this->subscribers[$id] = $domainEventSubscriber;
-        ++$this->id;
-
-        return $id;
-    }
-
-    public function unsubscribe($id)
-    {
-        unset($this->subscribers[$id]);
-    }
-
-    public function publish(DomainEvent $domainEvent)
-    {
-        foreach ($this->subscribers as $aSubscriber) {
-            if ($aSubscriber->isSubscribedTo($domainEvent)) {
-                $aSubscriber->handle($domainEvent);
+        foreach ($this->subscribers as $subscriber) {
+            if ($subscriber->isSubscribedTo($domainEvent)) {
+                $subscriber->handle($domainEvent);
             }
         }
     }

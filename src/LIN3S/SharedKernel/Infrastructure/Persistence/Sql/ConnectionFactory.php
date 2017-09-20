@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace LIN3S\SharedKernel\Infrastructure\Persistence\Sql;
 
 /**
- * @author Beñat Espiña <bespina@lin3s.com>
+ * @author Beñat Espiña <benatespina@gmail.com>
  */
 final class ConnectionFactory
 {
@@ -25,8 +25,14 @@ final class ConnectionFactory
     private $username;
     private $password;
 
-    public function __construct($driver, $dbName, $host, $port, $username, $password)
-    {
+    public function __construct(
+        string $driver,
+        string $dbName,
+        string $host,
+        ?string $port,
+        string $username,
+        ?string $password
+    ) {
         $this->driver = $driver;
         $this->dbName = $dbName;
         $this->host = $host;
@@ -35,10 +41,13 @@ final class ConnectionFactory
         $this->password = $password;
     }
 
-    public function createConnection()
+    public function createConnection() : PDO
     {
         $dsn = sprintf('%s:dbname=%s;host=%s;port=%s', $this->driver, $this->dbName, $this->host, $this->port);
 
-        return new \PDO($dsn, $this->username, $this->password);
+        return new Pdo(
+            new \PDO($dsn, $this->username, $this->password
+            )
+        );
     }
 }

@@ -36,11 +36,7 @@ class PdoTransactionMiddleware implements Middleware
             $returnValue = $next($command);
 
             $this->pdo->commit();
-        } catch (\Exception $exception) {
-            $this->pdo->rollBack();
-
-            throw $exception;
-        } catch (\Throwable $exception) {
+        } catch (\Exception | \Throwable $exception) {
             $this->pdo->rollBack();
 
             throw $exception;

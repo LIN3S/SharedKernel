@@ -18,28 +18,28 @@ use LIN3S\SharedKernel\Domain\Event\DomainEventPublisher;
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-trait AggregateRootCapabilities
+trait TriggerEvents
 {
     private $recordedEvents = [];
 
-    public function recordedEvents()
+    public function recordedEvents() : array
     {
         return $this->recordedEvents;
     }
 
-    public function clearEvents()
+    public function clearEvents() : void
     {
         $this->recordedEvents = [];
     }
 
-    protected function publish(DomainEvent $event)
+    protected function publish(DomainEvent $event) : void
     {
         $this->apply($event);
         $this->record($event);
         DomainEventPublisher::instance()->publish($event);
     }
 
-    protected function apply(DomainEvent $event)
+    protected function apply(DomainEvent $event) : void
     {
         $modifier = 'apply' . array_reverse(explode('\\', get_class($event)))[0];
         if (!method_exists($this, $modifier)) {
@@ -48,7 +48,7 @@ trait AggregateRootCapabilities
         $this->$modifier($event);
     }
 
-    private function record(DomainEvent $event)
+    private function record(DomainEvent $event) : void
     {
         $this->recordedEvents[] = $event;
     }

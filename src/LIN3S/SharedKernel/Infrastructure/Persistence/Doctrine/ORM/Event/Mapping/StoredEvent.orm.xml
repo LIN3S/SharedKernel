@@ -26,6 +26,6 @@
         <field name="type" length="150"/>
         <field name="payload" type="json_array"/>
         <field name="occurredOn" type="integer"/>
-        <field name="streamName" column="stream_name" length="255"/>
+        <field name="stream" column="stream" length="255"/>
     </entity>
 </doctrine-mapping>

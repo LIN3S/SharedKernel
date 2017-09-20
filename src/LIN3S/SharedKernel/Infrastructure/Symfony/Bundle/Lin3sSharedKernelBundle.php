@@ -54,12 +54,6 @@ class Lin3sSharedKernelBundle extends Bundle
                         'dir'       => $this->basePath() . '/Domain/Model/ZipCode/Mapping/',
                         'prefix'    => 'LIN3S\SharedKernel\Domain\Model\ZipCode',
                     ],
-                    'Lin3sSharedKernelSotredEvent' => [
-                        'type'      => 'xml',
-                        'is_bundle' => false,
-                        'dir'       => $this->basePath() . '/Event/Mapping/',
-                        'prefix'    => 'LIN3S\SharedKernel\Event',
-                    ],
                 ],
             ],
         ]);

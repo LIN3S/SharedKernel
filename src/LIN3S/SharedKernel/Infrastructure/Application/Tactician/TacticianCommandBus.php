@@ -28,7 +28,7 @@ class TacticianCommandBus implements CommandBus
         $this->commandBus = $commandBus;
     }
 
-    public function handle($command)
+    public function handle($command) : void
     {
         $this->commandBus->handle($command);
     }

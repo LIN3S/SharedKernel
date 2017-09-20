@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace LIN3S\SharedKernel\Tests\Double\Domain\Model;
 
-use LIN3S\SharedKernel\Domain\Model\BaseAggregateRoot;
+use LIN3S\SharedKernel\Domain\Model\AggregateRoot;
 use LIN3S\SharedKernel\Domain\Model\EventSourcedAggregateRoot;
 use LIN3S\SharedKernel\Domain\Model\Identity\Id;
 use LIN3S\SharedKernel\Event\EventStream;
@@ -21,7 +21,7 @@ use LIN3S\SharedKernel\Event\EventStream;
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class AggregateRootStub extends BaseAggregateRoot implements EventSourcedAggregateRoot
+class AggregateRootStub extends AggregateRoot implements EventSourcedAggregateRoot
 {
     private $id;
     private $property;

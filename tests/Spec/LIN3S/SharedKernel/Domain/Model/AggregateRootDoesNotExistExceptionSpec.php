@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Spec\LIN3S\SharedKernel\Domain\Model;
 
-use LIN3S\SharedKernel\Domain\Model\AggregateRootDoesNotExistException;
+use LIN3S\SharedKernel\Domain\Model\AggregateRootDoesNotExist;
 use LIN3S\SharedKernel\Domain\Model\Identity\Id;
 use LIN3S\SharedKernel\Exception\Exception;
 use PhpSpec\ObjectBehavior;
@@ -31,7 +31,7 @@ class AggregateRootDoesNotExistExceptionSpec extends ObjectBehavior
 
     function it_is_initializable()
     {
-        $this->shouldHaveType(AggregateRootDoesNotExistException::class);
+        $this->shouldHaveType(AggregateRootDoesNotExist::class);
     }
 
     function it_extends_exception()

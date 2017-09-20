@@ -11,12 +11,16 @@
 
 declare(strict_types=1);
 
-namespace LIN3S\SharedKernel\Application;
+namespace LIN3S\SharedKernel\Infrastructure\Persistence\Sql;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-interface CommandBus
+final class PdoExecutionFailed extends \PDOException
 {
-    public function handle($command) : void;
+    public function __construct(array $errorInfo)
+    {
+        parent::__construct();
+        $this->errorInfo = $errorInfo;
+    }
 }

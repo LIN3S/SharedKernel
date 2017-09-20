@@ -13,8 +13,13 @@ declare(strict_types=1);
 
 namespace LIN3S\SharedKernel\Infrastructure\Persistence\Sql;
 
+/**
+ * @author Beñat Espiña <benatespina@gmail.com>
+ */
 final class Pdo
 {
+    public const DATE_FORMAT = 'Y-m-d H:i:s';
+
     private $pdo;
 
     public function __construct(\PDO $pdo)
@@ -22,35 +27,34 @@ final class Pdo
         $this->pdo = $pdo;
     }
 
-    public function exec($statement)
+    public function exec($statement) : int
     {
         return $this->pdo->exec($statement);
     }
 
-    public function beginTransaction()
+    public function beginTransaction() : void
     {
         $this->pdo->beginTransaction();
     }
 
-    public function commit()
+    public function commit() : void
     {
         $this->pdo->commit();
     }
 
-    public function rollback()
+    public function rollback() : void
     {
         $this->pdo->rollBack();
     }
 
-    public function nextIdentity()
-    {
-        return $this->pdo->lastInsertId();
-    }
-
-    public function execute($sql, array $parameters)
+    public function execute($sql, array $parameters) : \PDOStatement
     {
         $statement = $this->pdo->prepare($sql);
-        $statement->execute($parameters);
+        $result = $statement->execute($parameters);
+
+        if (false === $result) {
+            throw new PdoExecutionFailed($statement->errorInfo());
+        }
 
         return $statement;
     }
