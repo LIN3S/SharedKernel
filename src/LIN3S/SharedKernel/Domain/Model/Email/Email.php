@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace LIN3S\SharedKernel\Domain\Model\Email;
 
 /**
@@ -47,7 +49,7 @@ class Email
 
     public function equals(Email $anEmail)
     {
-        return strtolower((string) $this) === strtolower((string) $anEmail);
+        return mb_strtolower((string) $this) === mb_strtolower((string) $anEmail);
     }
 
     public function __toString()

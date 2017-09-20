@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace LIN3S\SharedKernel\Infrastructure\Event\SimpleBus\EventRecorder\Doctrine\ORM;
 
 use Doctrine\Common\EventSubscriber;

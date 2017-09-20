@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace LIN3S\SharedKernel\Domain\Model\Phone;
 
 use LIN3S\SharedKernel\Exception\Exception;

@@ -9,9 +9,11 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace LIN3S\SharedKernel\Tests\Matchers;
 
-use LIN3S\SharedKernel\Domain\Model\Collection;
+use LIN3S\SharedKernel\Domain\Model\Collection\Collection;
 use PhpSpec\Exception\Example\FailureException;
 use PhpSpec\Matcher\BasicMatcher;
 
@@ -41,6 +43,6 @@ class CollectionMatcher extends BasicMatcher
 
     public function supports($name, $subject, array $arguments)
     {
-        return $name === 'returnCollection' && $subject instanceof Collection;
+        return 'returnCollection' === $name && $subject instanceof Collection;
     }
 }

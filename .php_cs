@@ -3,46 +3,25 @@
 /*
  * This file is part of the Shared Kernel library.
  *
- * Copyright (c) 2016 LIN3S <info@lin3s.com>
+ * Copyright (c) 2016-present LIN3S <info@lin3s.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-$header = <<<'EOF'
-This file is part of the Shared Kernel library.
+declare(strict_types=1);
 
-Copyright (c) 2016-present LIN3S <info@lin3s.com>
+use LIN3S\PhpCsFixerConfig\Lin3sConfig;
 
-For the full copyright and license information, please view the LICENSE
-file that was distributed with this source code.
-EOF;
+$config = new Lin3sConfig('Shared Kernel', '2016', 'library');
+$config->getFinder()->in([
+    __DIR__ . '/src',
+    __DIR__ . '/tests/Double',
+    __DIR__ . '/tests/Matchers',
+]);
 
-Symfony\CS\Fixer\Contrib\HeaderCommentFixer::setHeader($header);
+$cacheDir = getenv('TRAVIS') ? getenv('HOME') . '/.php-cs-fixer' : __DIR__;
 
-$finder = Symfony\CS\Finder::create()
-    ->in([__DIR__ . '/src', __DIR__ . '/tests/Double', __DIR__ . '/tests/Matchers'])
-    ->notName('*.yml')
-    ->notName('*.xml')
-    ->notName('*Spec.php');
+$config->setCacheFile($cacheDir . '/.php_cs.cache');
 
-return Symfony\CS\Config::create()
-    ->finder($finder)
-    ->level(Symfony\CS\FixerInterface::SYMFONY_LEVEL)
-    ->fixers([
-        '-psr0',
-        '-unalign_double_arrow',
-        '-concat_without_spaces',
-        'align_double_arrow',
-        'concat_with_spaces',
-        'header_comment',
-        'multiline_spaces_before_semicolon',
-        'newline_after_open_tag',
-        'ordered_use',
-        'php4_constructor',
-        'phpdoc_order',
-        'short_array_syntax',
-        'short_echo_tag',
-        'strict',
-        'strict_param',
-    ]);
+return $config;

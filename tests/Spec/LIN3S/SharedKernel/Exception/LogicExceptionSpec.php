@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Spec\LIN3S\SharedKernel\Exception;
 
 use LIN3S\SharedKernel\Exception\LogicException;

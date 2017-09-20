@@ -6,6 +6,8 @@ To get the diff for a specific change, go to https://github.com/LIN3S/SharedKern
 To get the diff between two versions, go to https://github.com/LIN3S/SharedKernel/compare/v0.3.0...v0.4.0
 
 * 0.4.0
+    * Replaced generic php-cs-fixer with lin3s/php-cs-fixer-config.
+    * The minimum PHP version becomes 7.1.
     * Added timestamp methods to the DateTime wrapper.
     * Added PDO wrapper and sql connection factory.
     * Added DomainEventPublisher and added Tactician middleware to publish domain events after command execution.

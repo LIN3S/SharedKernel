@@ -9,10 +9,12 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace LIN3S\SharedKernel\Infrastructure\Application\Tactician;
 
-use LIN3S\SharedKernel\Application\CommandBus;
 use League\Tactician\CommandBus as Tactician;
+use LIN3S\SharedKernel\Application\CommandBus;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>

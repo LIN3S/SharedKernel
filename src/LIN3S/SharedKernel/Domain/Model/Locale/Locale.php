@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace LIN3S\SharedKernel\Domain\Model\Locale;
+declare(strict_types=1);
 
-use Phospr\Locale\Locale as BaseLocale;
+namespace LIN3S\SharedKernel\Domain\Model\Locale;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
@@ -47,14 +47,14 @@ class Locale
     {
         $segments = explode('_', $this->locale);
 
-        return isset($segments[1]) ? $segments[1] : null;
+        return $segments[1] ?? null;
     }
 
     public function languageCode()
     {
         $segments = explode('_', $this->locale);
 
-        return isset($segments[0]) ? $segments[0] : null;
+        return $segments[0] ?? null;
     }
 
     public function language()

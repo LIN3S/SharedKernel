@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace LIN3S\SharedKernel\Tests\Matchers;
 
 use LIN3S\SharedKernel\Domain\Model\AggregateRoot;
@@ -57,6 +59,6 @@ class DomainPublishedMatcher extends BasicMatcher
 
     public function supports($name, $subject, array $arguments)
     {
-        return $name === 'havePublished' && $subject instanceof AggregateRoot;
+        return 'havePublished' === $name && $subject instanceof AggregateRoot;
     }
 }

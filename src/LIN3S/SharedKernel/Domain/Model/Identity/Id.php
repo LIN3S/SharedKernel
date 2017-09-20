@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace LIN3S\SharedKernel\Domain\Model\Identity;
 
 /**
@@ -25,7 +27,7 @@ abstract class Id implements BaseId
 
     protected function __construct($id = null)
     {
-        if ($id !== null && !is_scalar($id)) {
+        if (null !== $id && !is_scalar($id)) {
             throw new InvalidIdException();
         }
         $this->id = null === $id ? Uuid::generate() : $id;

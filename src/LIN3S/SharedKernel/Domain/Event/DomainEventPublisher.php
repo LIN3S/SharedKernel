@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace LIN3S\SharedKernel\Domain\Event;
 
 use LIN3S\SharedKernel\Domain\Model\DomainEvent;
@@ -47,7 +49,7 @@ class DomainEventPublisher
     {
         $id = $this->id;
         $this->subscribers[$id] = $domainEventSubscriber;
-        $this->id++;
+        ++$this->id;
 
         return $id;
     }

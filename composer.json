@@ -21,13 +21,13 @@
     },
     "require-dev": {
         "doctrine/orm": "^2.5",
-        "friendsofphp/php-cs-fixer": "^1.12",
-        "phpspec/phpspec": "^3.2"
+        "phpspec/phpspec": "^4.0",
+        "lin3s/php-cs-fixer-config": "^1.0"
     },
     "scripts": {
         "cs": [
-            "php-cs-fixer fix --config-file=.php_cs",
-            "php-cs-fixer fix --config-file=.phpspec_cs"
+            "php-cs-fixer fix --config=.php_cs",
+            "php-cs-fixer fix --config=.phpspec_cs"
         ]
     },
     "autoload": {

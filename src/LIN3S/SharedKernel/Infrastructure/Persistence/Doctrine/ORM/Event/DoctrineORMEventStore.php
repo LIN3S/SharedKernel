@@ -9,19 +9,17 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace LIN3S\SharedKernel\Infrastructure\Persistence\Doctrine\ORM\Event;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
 use LIN3S\SharedKernel\Domain\Model\DomainEvent;
+use LIN3S\SharedKernel\Domain\Model\DomainEventCollection;
+use LIN3S\SharedKernel\Event\EventStore;
 use LIN3S\SharedKernel\Event\StoredEvent;
 use LIN3S\SharedKernel\Event\Stream;
 use LIN3S\SharedKernel\Event\StreamName;
-use LIN3S\SharedKernel\Infrastructure\Persistence\Sql\Pdo;
-use LIN3S\SharedKernel\Domain\Model\AggregateRootDoesNotExistException;
-use LIN3S\SharedKernel\Domain\Model\DomainEventCollection;
-use LIN3S\SharedKernel\Domain\Model\Identity\Id;
-use LIN3S\SharedKernel\Event\EventStore;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
@@ -56,7 +54,7 @@ class DoctrineORMEventStore extends EntityRepository implements EventStore
         $payload = [];
         $eventReflection = new \ReflectionClass($event);
         foreach ($eventReflection->getProperties() as $property) {
-            if ($property->name === 'occurredOn') {
+            if ('occurredOn' === $property->name) {
                 continue;
             }
 

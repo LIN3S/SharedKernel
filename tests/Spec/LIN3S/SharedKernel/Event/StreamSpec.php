@@ -9,35 +9,25 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Spec\LIN3S\SharedKernel\Event;
 
 use LIN3S\SharedKernel\Domain\Model\DomainEventCollection;
 use LIN3S\SharedKernel\Domain\Model\Identity\Id;
-use LIN3S\SharedKernel\Event\EventStream;
+use LIN3S\SharedKernel\Event\Stream;
 use PhpSpec\ObjectBehavior;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class EventStreamSpec extends ObjectBehavior
+class StreamSpec extends ObjectBehavior
 {
-    function let(Id $aggregateId, DomainEventCollection $events)
+    function it_can_be_created(Id $aggregateId, DomainEventCollection $events)
     {
         $this->beConstructedWith($aggregateId, $events);
-    }
-
-    function it_is_initializable()
-    {
-        $this->shouldHaveType(EventStream::class);
-    }
-
-    function it_gets_aggregate_id(Id $aggregateId)
-    {
+        $this->shouldHaveType(Stream::class);
         $this->aggregateId()->shouldReturn($aggregateId);
-    }
-
-    function it_gets_events(DomainEventCollection $events)
-    {
         $this->events()->shouldReturn($events);
     }
 }

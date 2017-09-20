@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace LIN3S\SharedKernel\Event;
+declare(strict_types=1);
 
-use LIN3S\SharedKernel\Domain\Model\Identity\Id;
+namespace LIN3S\SharedKernel\Event;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>

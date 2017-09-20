@@ -17,6 +17,6 @@
                           http://raw.github.com/doctrine/doctrine2/master/doctrine-mapping.xsd">
 
     <embeddable name="LIN3S\SharedKernel\Domain\Model\Email\Email">
-        <field name="email" type="string" length="255" nullable="true"/>
+        <field name="email" length="255" nullable="true"/>
     </embeddable>
 </doctrine-mapping>

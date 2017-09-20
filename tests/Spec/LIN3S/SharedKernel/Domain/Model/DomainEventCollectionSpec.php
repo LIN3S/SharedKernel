@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Spec\LIN3S\SharedKernel\Domain\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;

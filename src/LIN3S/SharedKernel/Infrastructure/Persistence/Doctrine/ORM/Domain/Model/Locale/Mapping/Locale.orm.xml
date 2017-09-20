@@ -17,6 +17,6 @@
                           http://raw.github.com/doctrine/doctrine2/master/doctrine-mapping.xsd">
 
     <embeddable name="LIN3S\SharedKernel\Domain\Model\Locale\Locale">
-        <field name="locale" column="locale" type="string" length="12" nullable="true"/>
+        <field name="locale" column="locale" length="12" nullable="true"/>
     </embeddable>
 </doctrine-mapping>
