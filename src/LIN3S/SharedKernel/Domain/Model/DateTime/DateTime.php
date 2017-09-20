@@ -28,6 +28,16 @@ final class DateTime
         return new \DateTimeImmutable($relative);
     }
 
+    public static function utcTimestamp()
+    {
+        return (new \DateTimeImmutable('now', new \DateTimeZone('UTC')))->getTimestamp();
+    }
+
+    public static function timestamp()
+    {
+        return (new \DateTimeImmutable())->getTimestamp();
+    }
+
     private function __construct()
     {
     }
