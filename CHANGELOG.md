@@ -6,6 +6,7 @@ To get the diff for a specific change, go to https://github.com/LIN3S/SharedKern
 To get the diff between two versions, go to https://github.com/LIN3S/SharedKernel/compare/v0.3.0...v0.4.0
 
 * 0.4.0
+    * Added `/events` endpoint to consume via REST the domain events.
     * Added stream version concept to the event store.
     * Removed datetime custom API extending the PHP native `DateTimeImmutable` class.
     * Made tactician services optional.
