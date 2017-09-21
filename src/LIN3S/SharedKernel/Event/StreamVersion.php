@@ -13,36 +13,38 @@ declare(strict_types=1);
 
 namespace LIN3S\SharedKernel\Event;
 
-use LIN3S\SharedKernel\Domain\Model\DomainEventCollection;
-
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class Stream
+class StreamVersion
 {
-    private $name;
     private $version;
-    private $events;
 
-    public function __construct(StreamName $name, StreamVersion $version, DomainEventCollection $events)
+    public function __construct(int $version)
     {
-        $this->name = $name;
+        $this->setVersion($version);
+    }
+
+    private function setVersion(int $version) : void
+    {
+        $this->checkVersionIsValid($version);
         $this->version = $version;
-        $this->events = $events;
     }
 
-    public function name() : StreamName
+    private function checkVersionIsValid(int $version) : void
     {
-        return $this->name;
+        if (0 >= $version) {
+            throw new StreamVersionIsNotValid();
+        }
     }
 
-    public function version() : StreamVersion
+    public function version() : int
     {
         return $this->version;
     }
 
-    public function events() : DomainEventCollection
+    public function __toString() : string
     {
-        return $this->events;
+        return (string) $this->version();
     }
 }

@@ -25,11 +25,12 @@ class StoredEvent
     private $type;
     private $payload;
     private $occurredOn;
-    private $stream;
+    private $streamName;
+    private $streamVersion;
 
-    public static function fromDomainEvent(DomainEvent $event, StreamName $stream) : self
+    public static function fromDomainEvent(DomainEvent $event, StreamName $name, StreamVersion $version) : self
     {
-        $instance = new self(get_class($event), $event->occurredOn(), $stream);
+        $instance = new self(get_class($event), $event->occurredOn(), $name, $version);
         $instance->setPayload($event);
 
         return $instance;
@@ -55,11 +56,12 @@ class StoredEvent
         $this->payload = json_encode($this->payload);
     }
 
-    private function __construct(string $type, \DateTimeInterface $occurredOn, StreamName $stream)
+    private function __construct(string $type, \DateTimeInterface $occurredOn, StreamName $name, StreamVersion $version)
     {
         $this->type = $type;
         $this->setOccurredOn($occurredOn);
-        $this->stream = $stream->name();
+        $this->streamName = $name->name();
+        $this->streamVersion = $version->version();
     }
 
     private function setOccurredOn(\DateTimeInterface $occurredOn) : void
@@ -75,7 +77,8 @@ class StoredEvent
             $this->type,
             $this->payload,
             $this->occurredOn,
-            $this->stream,
+            $this->streamName,
+            $this->streamVersion,
         ];
     }
 

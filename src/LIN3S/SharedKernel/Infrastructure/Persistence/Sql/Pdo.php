@@ -28,24 +28,36 @@ final class Pdo
         $this->pdo->setAttribute($this->pdo::ATTR_ERRMODE, $this->pdo::ERRMODE_EXCEPTION);
     }
 
-    public function exec(string $statement) : int
+    public function query(string $sql, array $parameters) : array
     {
-        return $this->pdo->exec($statement);
+        return $this->execute($sql, $parameters)->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function beginTransaction() : void
+    public function insert($table, $columns, $numberOfInsertions, callable $prepareData) : void
+    {
+        $rowPlaces = '(' . implode(', ', array_fill(0, count($columns), '?')) . ')';
+        $allPlaces = implode(', ', array_fill(0, $numberOfInsertions, $rowPlaces));
+
+        $sql = 'INSERT INTO ' . $table . ' (' . implode(', ', $columns) . ') VALUES ' . $allPlaces;
+
+        $this->execute($sql, call_user_func($prepareData));
+    }
+
+    public function executeAtomically(callable $function)
     {
         $this->pdo->beginTransaction();
-    }
 
-    public function commit() : void
-    {
-        $this->pdo->commit();
-    }
+        try {
+            $return = call_user_func($function, $this);
 
-    public function rollback() : void
-    {
-        $this->pdo->rollBack();
+            $this->pdo->commit();
+
+            return $return ?: true;
+        } catch (\Exception | \Throwable $exception) {
+            $this->pdo->rollback();
+
+            throw $exception;
+        }
     }
 
     public function execute(string $sql, array $parameters) : \PDOStatement

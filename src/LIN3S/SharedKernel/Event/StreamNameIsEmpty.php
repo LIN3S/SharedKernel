@@ -13,12 +13,11 @@ declare(strict_types=1);
 
 namespace LIN3S\SharedKernel\Event;
 
+use LIN3S\SharedKernel\Exception\Exception;
+
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-interface EventStore
+class StreamNameIsEmpty extends Exception
 {
-    public function append(Stream $stream) : void;
-
-    public function streamOfName(StreamName $name) : Stream;
 }

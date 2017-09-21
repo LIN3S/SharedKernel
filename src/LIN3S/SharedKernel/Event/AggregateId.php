@@ -13,12 +13,11 @@ declare(strict_types=1);
 
 namespace LIN3S\SharedKernel\Event;
 
+use LIN3S\SharedKernel\Domain\Model\Identity\Id;
+
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-interface EventStore
+class AggregateId extends Id
 {
-    public function append(Stream $stream) : void;
-
-    public function streamOfName(StreamName $name) : Stream;
 }

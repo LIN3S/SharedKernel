@@ -13,14 +13,15 @@ declare(strict_types=1);
 
 namespace LIN3S\SharedKernel\Infrastructure\Application\Tactician\Middlewares;
 
-use App\Domain\Model\Post\PublicProject\Participant\ParticipantId;
 use League\Tactician\Middleware;
 use LIN3S\SharedKernel\Domain\Event\CollectInMemoryDomainEventsSubscriber;
 use LIN3S\SharedKernel\Domain\Event\DomainEventPublisher;
 use LIN3S\SharedKernel\Domain\Model\DomainEventCollection;
+use LIN3S\SharedKernel\Event\AggregateId;
 use LIN3S\SharedKernel\Event\EventStore;
 use LIN3S\SharedKernel\Event\Stream;
 use LIN3S\SharedKernel\Event\StreamName;
+use LIN3S\SharedKernel\Event\StreamVersion;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
@@ -42,17 +43,24 @@ class DomainEventsPublicationMiddleware implements Middleware
 
         $returnValue = $next($command);
 
-        $domainEvents = $collectDomainEventsSubscriber->events();
-        $aggregateId = ParticipantId::generate('dummy-id'); // $domainEvents[0]->aggregateId()
-        $name = '@TODO'; // // $domainEvents[0]->name()
-
-        $this->eventStore->append(
-            new Stream(
-                new StreamName($aggregateId, $name),
-                new DomainEventCollection($domainEvents)
-            )
-        );
+        $eventsPerAggregate = $collectDomainEventsSubscriber->events();
+        foreach ($eventsPerAggregate as $name => $aggregate) {
+            foreach ($aggregate as $aggregateId => $domainEvents) {
+                $this->eventStore->append(
+                    new Stream(
+                        new StreamName(AggregateId::generate($aggregateId), $name),
+                        $this->streamVersion(),
+                        new DomainEventCollection($domainEvents)
+                    )
+                );
+            }
+        }
 
         return $returnValue;
+    }
+
+    private function streamVersion() : StreamVersion
+    {
+        return new StreamVersion(1);    // TODO: This value is hardcoded for now.
     }
 }

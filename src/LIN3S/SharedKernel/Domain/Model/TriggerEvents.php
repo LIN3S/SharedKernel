@@ -22,6 +22,8 @@ trait TriggerEvents
 {
     private $recordedEvents = [];
 
+    abstract public function id();
+
     public function recordedEvents() : array
     {
         return $this->recordedEvents;
@@ -36,7 +38,13 @@ trait TriggerEvents
     {
         $this->apply($event);
         $this->record($event);
-        DomainEventPublisher::instance()->publish($event);
+        DomainEventPublisher::instance()->publish(
+            new PublishableDomainEvent(
+                $this->id(),
+                mb_strtolower(array_reverse(explode('\\', get_class($this)))[0]),
+                $event
+            )
+        );
     }
 
     protected function apply(DomainEvent $event) : void
