@@ -16,38 +16,6 @@ namespace LIN3S\SharedKernel\Domain\Model\DateTime;
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-final class DateTime
+final class DateTime extends \DateTimeImmutable
 {
-    public static function now()
-    {
-        return new \DateTimeImmutable();
-    }
-
-    public static function fromTime($time)
-    {
-        return new \DateTimeImmutable($time);
-    }
-
-    public static function fromRelative($relative)
-    {
-        return new \DateTimeImmutable($relative);
-    }
-
-    public static function utcTimestamp()
-    {
-        return (new \DateTimeImmutable('now', new \DateTimeZone('UTC')))->getTimestamp();
-    }
-
-    public static function timestamp()
-    {
-        return (new \DateTimeImmutable())->getTimestamp();
-    }
-
-    private function __construct()
-    {
-    }
-
-    private function __clone()
-    {
-    }
 }
