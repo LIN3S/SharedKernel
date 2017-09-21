@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace LIN3S\SharedKernel\Event;
 
+use App\Domain\Model\Post\PostId;
+use App\Domain\Model\Post\PostWasCreated;
 use LIN3S\SharedKernel\Domain\Model\DomainEvent;
 use LIN3S\SharedKernel\Exception\InvalidArgumentException;
 
@@ -39,19 +41,13 @@ class StoredEvent
     private function setPayload(DomainEvent $event) : void
     {
         $this->payload = [];
-
         $eventReflection = new \ReflectionClass($event);
         foreach ($eventReflection->getProperties() as $property) {
             if ('occurredOn' === $property->name) {
                 continue;
             }
             $property->setAccessible(true);
-            // TODO: the following cast is not valid
-            // what happens when the given property (Value object)
-            // contains more than one attribute or it has not got implemented
-            // the __toString() method ??
-            // Furthermore, in the decodification process we need the class this property
-            $this->payload[$property->getName()] = (string) $property->getValue($event);
+            $this->payload[$property->getName()] = $this->serialize($property, $event);
         }
         $this->payload = json_encode($this->payload);
     }
@@ -87,5 +83,24 @@ class StoredEvent
         if (!($occurredOn instanceof \DateTimeImmutable) && !($occurredOn instanceof \DateTime)) {
             throw new InvalidArgumentException('Given occurredOn is not a \DateTime or \DateTimeImmutable instance');
         }
+    }
+
+    private function serialize(\ReflectionProperty $property, $object, array $result = [])
+    {
+        $property->setAccessible(true);
+        $value = $property->getValue($object);
+        if (is_scalar($value)) {
+            return $value;
+        }
+
+        $className = get_class($value);
+        $reflectionClass = new \ReflectionClass($value);
+        $properties = $reflectionClass->getProperties();
+
+        foreach ($properties as $property) {
+            $result[$className][$property->getName()] = $this->serialize($property, $value);
+        }
+
+        return $result;
     }
 }

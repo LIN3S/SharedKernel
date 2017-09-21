@@ -5,8 +5,9 @@
 # For the full copyright and license information, please view the LICENSE
 # file that was distributed with this source code.
 
-services:
-    lin3s.persistence.sql.event_store:
-        class: LIN3S\SharedKernel\Infrastructure\Persistence\Sql\Event\SqlEventStore
-        arguments:
-            - "@lin3s.persistence.sql.pdo"
+lin3s_list_events:
+    path: /events
+    defaults:
+        _controller: "lin3s.http_action.list_events:__invoke"
+    methods:
+        - GET
