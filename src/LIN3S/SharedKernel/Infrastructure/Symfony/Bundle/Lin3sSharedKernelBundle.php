@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace LIN3S\SharedKernel\Infrastructure\Symfony\Bundle;
 
 use LIN3S\SharedKernel\Infrastructure\Symfony\Bundle\DependencyInjection\Compiler\DoctrineORMCustomTypesPass;
+use LIN3S\SharedKernel\Infrastructure\Symfony\Bundle\DependencyInjection\Compiler\TacticianPass;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -26,6 +27,7 @@ class Lin3sSharedKernelBundle extends Bundle
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new DoctrineORMCustomTypesPass(), PassConfig::TYPE_OPTIMIZE);
+        $container->addCompilerPass(new TacticianPass());
 
         $container->loadFromExtension('doctrine', [
             'orm' => [

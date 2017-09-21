@@ -25,9 +25,10 @@ final class Pdo
     public function __construct(\PDO $pdo)
     {
         $this->pdo = $pdo;
+        $this->pdo->setAttribute($this->pdo::ATTR_ERRMODE, $this->pdo::ERRMODE_EXCEPTION);
     }
 
-    public function exec($statement) : int
+    public function exec(string $statement) : int
     {
         return $this->pdo->exec($statement);
     }
@@ -47,14 +48,10 @@ final class Pdo
         $this->pdo->rollBack();
     }
 
-    public function execute($sql, array $parameters) : \PDOStatement
+    public function execute(string $sql, array $parameters) : \PDOStatement
     {
         $statement = $this->pdo->prepare($sql);
-        $result = $statement->execute($parameters);
-
-        if (false === $result) {
-            throw new PdoExecutionFailed($statement->errorInfo());
-        }
+        $statement->execute($parameters);
 
         return $statement;
     }

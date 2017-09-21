@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace LIN3S\SharedKernel\Domain\Model\DateTime;
 
+/**
+ * @author Beñat Espiña <benatespina@gmail.com>
+ */
 final class DateTime
 {
     public static function now()

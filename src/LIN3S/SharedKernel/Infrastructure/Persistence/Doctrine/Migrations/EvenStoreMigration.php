@@ -20,7 +20,7 @@ use LIN3S\SharedKernel\Infrastructure\Persistence\Sql\Event\SqlEventStore;
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class Version20170920174845 extends AbstractMigration
+class EvenStoreMigration extends AbstractMigration
 {
     public function up(Schema $schema) : void
     {

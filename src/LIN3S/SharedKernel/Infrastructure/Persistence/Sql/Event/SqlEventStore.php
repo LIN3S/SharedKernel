@@ -41,15 +41,18 @@ final class SqlEventStore implements EventStore
         foreach ($stream->events() as $event) {
             $storedEvents[] = StoredEvent::fromDomainEvent($event, $stream->name());
         }
+
+        if (count($storedEvents) === 0) {
+            return;
+        }
+
         $this->insert(...$storedEvents);
     }
 
     public function streamOfName(StreamName $name) : Stream
     {
         $tableName = self::TABLE_NAME;
-        $sql = <<<SQL
-SELECT * FROM $tableName WHERE stream = :stream ORDER BY id ASC
-SQL;
+        $sql = "SELECT * FROM `$tableName` WHERE stream = :stream ORDER BY id ASC";
         $storedEventRows = $this->pdo->execute($sql, ['stream' => $name->name()])->fetchAll(\PDO::FETCH_ASSOC);
         $domainEventsCollection = $this->buildDomainEventsCollection($storedEventRows);
 

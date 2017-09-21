@@ -5,6 +5,8 @@
 # For the full copyright and license information, please view the LICENSE
 # file that was distributed with this source code.
 
-imports:
-    - { resource: services/sql.yml }
-    - { resource: services/event_store.yml }
+services:
+    lin3s.persistence.sql.event_store:
+        class: LIN3S\SharedKernel\Infrastructure\Persistence\Sql\Event\SqlEventStore
+        arguments:
+            - "@lin3s.persistence.sql.pdo"

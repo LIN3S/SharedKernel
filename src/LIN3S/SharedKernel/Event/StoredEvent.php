@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace LIN3S\SharedKernel\Event;
 
 use LIN3S\SharedKernel\Domain\Model\DomainEvent;
+use LIN3S\SharedKernel\Exception\InvalidArgumentException;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
@@ -36,6 +37,8 @@ class StoredEvent
 
     private function setPayload(DomainEvent $event) : void
     {
+        $this->payload = [];
+
         $eventReflection = new \ReflectionClass($event);
         foreach ($eventReflection->getProperties() as $property) {
             if ('occurredOn' === $property->name) {
@@ -55,13 +58,13 @@ class StoredEvent
     private function __construct(string $type, \DateTimeInterface $occurredOn, StreamName $stream)
     {
         $this->type = $type;
-        $this->payload = [];
         $this->setOccurredOn($occurredOn);
         $this->stream = $stream->name();
     }
 
     private function setOccurredOn(\DateTimeInterface $occurredOn) : void
     {
+        $this->checkDateTimeIsValid($occurredOn);
         $occurredOn->setTimezone(new \DateTimeZone('UTC'));
         $this->occurredOn = $occurredOn->getTimestamp();
     }
@@ -74,5 +77,12 @@ class StoredEvent
             $this->occurredOn,
             $this->stream,
         ];
+    }
+
+    private function checkDateTimeIsValid(\DateTimeInterface $occurredOn) : void
+    {
+        if (!($occurredOn instanceof \DateTimeImmutable) && !($occurredOn instanceof \DateTime)) {
+            throw new InvalidArgumentException('Given occurredOn is not a \DateTime or \DateTimeImmutable instance');
+        }
     }
 }
