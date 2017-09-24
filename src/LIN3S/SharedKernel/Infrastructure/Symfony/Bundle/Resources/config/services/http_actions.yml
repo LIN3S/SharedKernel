@@ -5,7 +5,8 @@
 # For the full copyright and license information, please view the LICENSE
 # file that was distributed with this source code.
 
-imports:
-    - { resource: services/http_actions.yml }
-    - { resource: services/persistence.yml }
-    - { resource: services/queries.yml }
+services:
+    lin3s.http_action.list_events:
+        class: LIN3S\SharedKernel\Infrastructure\Symfony\HttpAction\ListEventsAction
+        arguments:
+            - "@lin3s.application.query.get_events"

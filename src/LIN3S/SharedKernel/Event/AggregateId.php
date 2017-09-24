@@ -11,16 +11,13 @@
 
 declare(strict_types=1);
 
-namespace LIN3S\SharedKernel\Domain\Event;
+namespace LIN3S\SharedKernel\Event;
 
-use LIN3S\SharedKernel\Domain\Model\DomainEvent;
+use LIN3S\SharedKernel\Domain\Model\Identity\Id;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-interface DomainEventSubscriber
+class AggregateId extends Id
 {
-    public function handle(DomainEvent $domainEvent) : void;
-
-    public function isSubscribedTo(DomainEvent $domainEvent) : bool;
 }

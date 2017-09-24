@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace LIN3S\SharedKernel\Domain\Event;
 
 use LIN3S\SharedKernel\Domain\Model\DomainEvent;
+use LIN3S\SharedKernel\Domain\Model\PublishableDomainEvent;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
@@ -27,17 +28,23 @@ class CollectInMemoryDomainEventsSubscriber implements DomainEventSubscriber
         $this->events = [];
     }
 
-    public function handle(DomainEvent $domainEvent)
+    public function handle(DomainEvent $domainEvent) : void
     {
-        $this->events[] = $domainEvent;
+        if (!$this->isSubscribedTo($domainEvent)) {
+            return;
+        }
+        $name = $domainEvent->name();
+        $id = $domainEvent->aggregateId()->id();
+
+        $this->events[$name][$id][] = $domainEvent->event();
     }
 
-    public function isSubscribedTo(DomainEvent $domainEvent)
+    public function isSubscribedTo(DomainEvent $domainEvent) : bool
     {
-        return true;
+        return $domainEvent instanceof PublishableDomainEvent;
     }
 
-    public function events()
+    public function events() : array
     {
         return $this->events;
     }

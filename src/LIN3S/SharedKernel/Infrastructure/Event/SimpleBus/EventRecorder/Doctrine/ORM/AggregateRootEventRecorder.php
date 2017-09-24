@@ -31,7 +31,7 @@ class AggregateRootEventRecorder implements EventSubscriber, ContainsRecordedMes
         $this->collectedEvents = [];
     }
 
-    public function getSubscribedEvents()
+    public function getSubscribedEvents() : array
     {
         return [
             Events::postPersist,
@@ -40,32 +40,32 @@ class AggregateRootEventRecorder implements EventSubscriber, ContainsRecordedMes
         ];
     }
 
-    public function postPersist(LifecycleEventArgs $event)
+    public function postPersist(LifecycleEventArgs $event) : void
     {
         $this->collectEventsFromAggregateRoot($event);
     }
 
-    public function postUpdate(LifecycleEventArgs $event)
+    public function postUpdate(LifecycleEventArgs $event) : void
     {
         $this->collectEventsFromAggregateRoot($event);
     }
 
-    public function postRemove(LifecycleEventArgs $event)
+    public function postRemove(LifecycleEventArgs $event) : void
     {
         $this->collectEventsFromAggregateRoot($event);
     }
 
-    public function recordedMessages()
+    public function recordedMessages() : array
     {
         return $this->collectedEvents;
     }
 
-    public function eraseMessages()
+    public function eraseMessages() : void
     {
         $this->collectedEvents = [];
     }
 
-    private function collectEventsFromAggregateRoot(LifecycleEventArgs $event)
+    private function collectEventsFromAggregateRoot(LifecycleEventArgs $event) : void
     {
         $entity = $event->getEntity();
 

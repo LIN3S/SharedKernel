@@ -13,12 +13,16 @@ declare(strict_types=1);
 
 namespace LIN3S\SharedKernel\Event;
 
+use LIN3S\SharedKernel\Domain\Model\DomainEventCollection;
+
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
 interface EventStore
 {
-    public function append(Stream $events) : void;
+    public function append(Stream $stream) : void;
 
     public function streamOfName(StreamName $name) : Stream;
+
+    public function eventsSince(?\DateTimeInterface $since, int $offset = 0, int $limit = -1) : array;
 }

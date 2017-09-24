@@ -5,7 +5,9 @@
 # For the full copyright and license information, please view the LICENSE
 # file that was distributed with this source code.
 
-imports:
-    - { resource: services/http_actions.yml }
-    - { resource: services/persistence.yml }
-    - { resource: services/queries.yml }
+lin3s_list_events:
+    path: /events
+    defaults:
+        _controller: "lin3s.http_action.list_events:__invoke"
+    methods:
+        - GET

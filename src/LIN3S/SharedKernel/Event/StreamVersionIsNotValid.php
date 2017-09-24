@@ -11,16 +11,13 @@
 
 declare(strict_types=1);
 
-namespace LIN3S\SharedKernel\Infrastructure\Persistence\Sql;
+namespace LIN3S\SharedKernel\Event;
+
+use LIN3S\SharedKernel\Exception\Exception;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-final class PdoExecutionFailed extends \PDOException
+class StreamVersionIsNotValid extends Exception
 {
-    public function __construct(array $errorInfo)
-    {
-        parent::__construct();
-        $this->errorInfo = $errorInfo;
-    }
 }

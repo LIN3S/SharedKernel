@@ -13,11 +13,13 @@ declare(strict_types=1);
 
 namespace LIN3S\SharedKernel\Infrastructure\Persistence\Sql\Event;
 
+use LIN3S\SharedKernel\Domain\Model\DomainEvent;
 use LIN3S\SharedKernel\Domain\Model\DomainEventCollection;
 use LIN3S\SharedKernel\Event\EventStore;
 use LIN3S\SharedKernel\Event\StoredEvent;
 use LIN3S\SharedKernel\Event\Stream;
 use LIN3S\SharedKernel\Event\StreamName;
+use LIN3S\SharedKernel\Event\StreamVersion;
 use LIN3S\SharedKernel\Infrastructure\Persistence\Sql\Pdo;
 
 /**
@@ -26,7 +28,7 @@ use LIN3S\SharedKernel\Infrastructure\Persistence\Sql\Pdo;
 final class SqlEventStore implements EventStore
 {
     private const TABLE_NAME = 'events';
-    private const COLUMN_NAMES = ['type', 'payload', 'occurred_on', 'stream'];
+    private const COLUMN_NAMES = ['type', 'payload', 'occurred_on', 'stream_name', 'stream_version'];
 
     private $pdo;
 
@@ -39,66 +41,129 @@ final class SqlEventStore implements EventStore
     {
         $storedEvents = [];
         foreach ($stream->events() as $event) {
-            $storedEvents[] = StoredEvent::fromDomainEvent($event, $stream->name());
+            $storedEvents[] = StoredEvent::fromDomainEvent($event, $stream->name(), $stream->version());
         }
-        $this->insert(...$storedEvents);
+
+        $numberOfEvents = count($storedEvents);
+        if (0 === $numberOfEvents) {
+            return;
+        }
+
+        $this->pdo->insert(self::TABLE_NAME, self::COLUMN_NAMES, $numberOfEvents, function () use ($storedEvents) {
+            $data = [];
+            foreach ($storedEvents as $event) {
+                $data = array_merge($data, $event->persistableToArray());
+            }
+
+            return $data;
+        });
     }
 
     public function streamOfName(StreamName $name) : Stream
     {
         $tableName = self::TABLE_NAME;
-        $sql = <<<SQL
-SELECT * FROM $tableName WHERE stream = :stream ORDER BY id ASC
-SQL;
-        $storedEventRows = $this->pdo->execute($sql, ['stream' => $name->name()])->fetchAll(\PDO::FETCH_ASSOC);
+        $sql = "SELECT * FROM `$tableName` WHERE stream_name = :streamName ORDER BY `order` ASC";
+        $storedEventRows = $this->pdo->query($sql, ['streamName' => $name->name()]);
         $domainEventsCollection = $this->buildDomainEventsCollection($storedEventRows);
 
         return new Stream($name, $domainEventsCollection);
     }
 
-    private function buildDomainEventsCollection(array $storedEventRows) : DomainEventCollection
+    public function eventsSince(?\DateTimeInterface $since, int $offset = 0, int $limit = -1) : array
     {
-        $domainEvents = new DomainEventCollection();
+        $since = null === $since ? 0 : $since->getTimestamp();
+        $tableName = self::TABLE_NAME;
+
+        $sql = <<<SQL
+SELECT * FROM `$tableName`
+WHERE occurred_on >= :occurredOn
+ORDER BY `order` ASC
+LIMIT $limit
+OFFSET $offset
+SQL;
+
+        $storedEventRows = $this->pdo->query($sql, ['occurredOn' => $since]);
+        $storedEvents = $this->buildStoredEvents($storedEventRows);
+
+        return $storedEvents;
+    }
+
+    private function buildStoredEvents(array $storedEventRows) : array
+    {
+        $events = [];
+//        $reflectedStoredEvent = new \ReflectionClass(StoredEvent::class);
         foreach ($storedEventRows as $storedEventRow) {
-            $eventType = $storedEventRow['type'];
-            $payload = json_decode($storedEventRow['payload'], true);
+            $storedEvent = StoredEvent::fromDomainEvent(
+                $this->buildDomainEvent($storedEventRow),
+                StreamName::fromName($storedEventRow['stream_name']),
+                new StreamVersion((int) $storedEventRow['stream_version'])
+            );
+//            $storedEvent = $reflectedStoredEvent->newInstanceWithoutConstructor();
+//
+//            foreach ($reflectedStoredEvent->getProperties() as $property) {
+//                $property->setAccessible(true);
+//                if ($property->getName() === 'id') {
+//                    $property->setValue($storedEvent, $storedEventRow['order']);
+//                } elseif ($property->getName() === 'type') {
+//                    $property->setValue($storedEvent, $storedEventRow['type']);
+//                } elseif ($property->getName() === 'occurredOn') {
+//                    $property->setValue($storedEvent, $storedEventRow['occurred_on']);
+//                } elseif ($property->getName() === 'payload') {
+//                    $property->setValue($storedEvent, $this->buildDomainEvent($storedEventRow));
+//                } elseif ($property->getName() === 'streamName') {
+//                    $property->setValue($storedEvent, $storedEventRow['stream_name']);
+//                } elseif ($property->getName() === 'streamVersion') {
+//                    $property->setValue($storedEvent, $storedEventRow['stream_version']);
+//                }
+//            }
+            $events[] = $storedEvent;
+        }
 
-            $eventReflection = new \ReflectionClass($eventType);
-            $domainEvent = $eventReflection->newInstanceWithoutConstructor();
-            foreach ($eventReflection->getProperties() as $property) {
-                $property->setAccessible(true);
+        return $events;
+    }
 
-                if (isset($payload[$property->name])) {
-                    $property->setValue($domainEvent, $payload[$property->name]);
-                    continue;
-                }
-                $property->setValue($domainEvent, $storedEventRow[$property]);
+    private function buildDomainEvent(array $storedEventRow) : DomainEvent
+    {
+        $type = $storedEventRow['type'];
+        $payload = json_decode($storedEventRow['payload'], true);
+
+        $eventReflection = new \ReflectionClass($type);
+        $domainEvent = $eventReflection->newInstanceWithoutConstructor();
+        foreach ($eventReflection->getProperties() as $property) {
+            $property->setAccessible(true);
+
+            if ($property->getName() === 'occurredOn') {
+                $occurredOn = new \DateTimeImmutable();
+                $occurredOn->setTimestamp((int) $storedEventRow['occurred_on']);
+                $property->setValue($domainEvent, $occurredOn);
+                continue;
             }
-
-            $domainEvents->add($domainEvent);
+            $this->unSerialize($property, $payload[$property->getName()], $domainEvent);
         }
 
-        return $domainEvents;
+        return $domainEvent;
     }
 
-    private function insert(StoredEvent ...$events) : void
+    private function unSerialize(\ReflectionProperty $reflectedProperty, $value, $object)
     {
-        $rowPlaces = '(' . implode(', ', array_fill(0, count(self::COLUMN_NAMES), '?')) . ')';
-        $allPlaces = implode(', ', array_fill(0, count($events), $rowPlaces));
+        if (is_scalar($value)) {
+            $reflectedProperty->setValue($object, $value);
 
-        $sql = 'INSERT INTO ' . self::TABLE_NAME . ' (' . implode(', ', self::COLUMN_NAMES) . ') VALUES ' . $allPlaces;
-
-        $this->pdo->execute($sql, $this->prepareData(...$events));
-    }
-
-    private function prepareData(StoredEvent ...$events) : array
-    {
-        $data = [];
-        foreach ($events as $event) {
-            $data = array_merge($data, $event->toArray());
+            return $object;
         }
 
-        return $data;
+        $className = key($value);
+        $reflectedClass = new \ReflectionClass($className);
+        $class = $reflectedClass->newInstanceWithoutConstructor();
+        $classValues = $value[$className];
+        foreach ($reflectedClass->getProperties() as $property) {
+            $property->setAccessible(true);
+            $attribute = $this->unSerialize($property, $classValues[$property->getName()], $class);
+            $reflectedProperty->setAccessible(true);
+            $reflectedProperty->setValue($object, $attribute);
+        }
+
+        return $object;
     }
 
     public static function createSchema() : string
@@ -107,12 +172,13 @@ SQL;
 
         return <<<SQL
 CREATE TABLE IF NOT EXISTS `$tableName` (
-  `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+  `order` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `type` VARCHAR(150) COLLATE utf8_bin NOT NULL,
   `payload` JSON NOT NULL,
   `occurred_on` INT(10) NOT NULL,
-  `stream` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`id`)
+  `stream_name` VARCHAR(255) NOT NULL,
+  `stream_version` INT NOT NULL,
+  PRIMARY KEY (`order`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 SQL;
     }

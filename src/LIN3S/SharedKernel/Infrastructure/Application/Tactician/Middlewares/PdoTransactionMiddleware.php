@@ -30,18 +30,10 @@ class PdoTransactionMiddleware implements Middleware
 
     public function execute($command, callable $next)
     {
-        $this->pdo->beginTransaction();
+        $nextOperation = function () use ($next, $command) {
+            return $next($command);
+        };
 
-        try {
-            $returnValue = $next($command);
-
-            $this->pdo->commit();
-        } catch (\Exception | \Throwable $exception) {
-            $this->pdo->rollBack();
-
-            throw $exception;
-        }
-
-        return $returnValue;
+        return $this->pdo->executeAtomically($nextOperation);
     }
 }
