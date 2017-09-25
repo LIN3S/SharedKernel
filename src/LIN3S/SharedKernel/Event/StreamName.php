@@ -23,7 +23,19 @@ class StreamName
     private $name;
     private $aggregateId;
 
-    public function __construct(Id $aggregateId, string $name)
+    public static function fromName(string $name) : self
+    {
+        list($name, $aggregateId) = explode('-', $name, 2);
+
+        return new self($aggregateId, $name);
+    }
+
+    public static function from(Id $aggregateId, string $name) : self
+    {
+        return new self($aggregateId->id(), $name);
+    }
+
+    private function __construct(string $aggregateId, string $name)
     {
         $this->setName($name);
         $this->aggregateId = $aggregateId;
@@ -44,7 +56,7 @@ class StreamName
 
     public function name() : string
     {
-        return sprintf('%s-%s', $this->name, $this->aggregateId->id());
+        return sprintf('%s-%s', $this->name, $this->aggregateId);
     }
 
     public function __toString() : string

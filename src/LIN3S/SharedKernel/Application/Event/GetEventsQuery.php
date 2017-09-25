@@ -39,7 +39,7 @@ class GetEventsQuery
         return $this->pageSize;
     }
 
-    public function since() : ?\DateTimeImmutable
+    public function since() : ?\DateTimeInterface
     {
         return $this->since;
     }

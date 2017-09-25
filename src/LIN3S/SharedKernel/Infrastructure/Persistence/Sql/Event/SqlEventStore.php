@@ -13,11 +13,12 @@ declare(strict_types=1);
 
 namespace LIN3S\SharedKernel\Infrastructure\Persistence\Sql\Event;
 
-use LIN3S\SharedKernel\Domain\Model\DomainEventCollection;
+use LIN3S\SharedKernel\Domain\Model\DomainEvent;
 use LIN3S\SharedKernel\Event\EventStore;
 use LIN3S\SharedKernel\Event\StoredEvent;
 use LIN3S\SharedKernel\Event\Stream;
 use LIN3S\SharedKernel\Event\StreamName;
+use LIN3S\SharedKernel\Event\StreamVersion;
 use LIN3S\SharedKernel\Infrastructure\Persistence\Sql\Pdo;
 
 /**
@@ -39,7 +40,7 @@ final class SqlEventStore implements EventStore
     {
         $storedEvents = [];
         foreach ($stream->events() as $event) {
-            $storedEvents[] = StoredEvent::fromDomainEvent($event, $stream->name(), $stream->version());
+            $storedEvents[] = new StoredEvent($event, $stream->name(), $stream->version());
         }
 
         $numberOfEvents = count($storedEvents);
@@ -60,36 +61,93 @@ final class SqlEventStore implements EventStore
     public function streamOfName(StreamName $name) : Stream
     {
         $tableName = self::TABLE_NAME;
-        $sql = "SELECT * FROM `$tableName` WHERE stream_name = :stream_name ORDER BY id ASC";
-        $storedEventRows = $this->pdo->query($sql, ['stream_name' => $name->name()]);
+        $sql = "SELECT * FROM `$tableName` WHERE stream_name = :streamName ORDER BY `order` ASC";
+        $storedEventRows = $this->pdo->query($sql, ['streamName' => $name->name()]);
         $domainEventsCollection = $this->buildDomainEventsCollection($storedEventRows);
 
         return new Stream($name, $domainEventsCollection);
     }
 
-    private function buildDomainEventsCollection(array $storedEventRows) : DomainEventCollection
+    public function eventsSince(?\DateTimeInterface $since, int $offset = 0, int $limit = -1) : array
     {
-        $domainEvents = new DomainEventCollection();
+        $since = null === $since ? 0 : $since->getTimestamp();
+        $tableName = self::TABLE_NAME;
+
+        $sql = <<<SQL
+SELECT * FROM `$tableName`
+WHERE occurred_on >= :occurredOn
+ORDER BY `order` ASC
+LIMIT $limit
+OFFSET $offset
+SQL;
+
+        $storedEventRows = $this->pdo->query($sql, ['occurredOn' => $since]);
+        $storedEvents = $this->buildStoredEvents($storedEventRows);
+
+        return $storedEvents;
+    }
+
+    private function buildStoredEvents(array $storedEventRows) : array
+    {
+        $events = [];
         foreach ($storedEventRows as $storedEventRow) {
-            $eventType = $storedEventRow['type'];
-            $payload = json_decode($storedEventRow['payload'], true);
+            $storedEvent = new StoredEvent(
+                $this->buildDomainEvent($storedEventRow),
+                StreamName::fromName($storedEventRow['stream_name']),
+                new StreamVersion((int) $storedEventRow['stream_version'])
+            );
+            $orderProperty = new \ReflectionProperty(StoredEvent::class, 'order');
+            $orderProperty->setAccessible(true);
+            $orderProperty->setValue($storedEvent, $storedEventRow['order']);
 
-            $eventReflection = new \ReflectionClass($eventType);
-            $domainEvent = $eventReflection->newInstanceWithoutConstructor();
-            foreach ($eventReflection->getProperties() as $property) {
-                $property->setAccessible(true);
-
-                if (isset($payload[$property->name])) {
-                    $property->setValue($domainEvent, $payload[$property->name]);
-                    continue;
-                }
-                $property->setValue($domainEvent, $storedEventRow[$property]);
-            }
-
-            $domainEvents->add($domainEvent);
+            $events[] = $storedEvent;
         }
 
-        return $domainEvents;
+        return $events;
+    }
+
+    private function buildDomainEvent(array $storedEventRow) : DomainEvent
+    {
+        $type = $storedEventRow['type'];
+        $payload = json_decode($storedEventRow['payload'], true);
+
+        $eventReflection = new \ReflectionClass($type);
+        $domainEvent = $eventReflection->newInstanceWithoutConstructor();
+        foreach ($eventReflection->getProperties() as $property) {
+            $property->setAccessible(true);
+
+            if ('occurredOn' === $property->getName()) {
+                $occurredOn = new \DateTimeImmutable();
+                $occurredOn->setTimestamp((int) $storedEventRow['occurred_on']);
+                $property->setValue($domainEvent, $occurredOn);
+                continue;
+            }
+            $this->unSerialize($property, $payload[$property->getName()], $domainEvent);
+        }
+
+        return $domainEvent;
+    }
+
+    private function unSerialize(\ReflectionProperty $reflectedProperty, $value, $object)
+    {
+        if (is_scalar($value)) {
+            $reflectedProperty->setValue($object, $value);
+
+            return $object;
+        }
+
+        $className = key($value);
+        $reflectedClass = new \ReflectionClass($className);
+        $class = $reflectedClass->newInstanceWithoutConstructor();
+        $classValues = $value[$className];
+        foreach ($reflectedClass->getProperties() as $property) {
+            $property->setAccessible(true);
+            $attribute = $this->unSerialize($property, $classValues[$property->getName()], $class);
+            $reflectedProperty->setAccessible(true);
+            $reflectedProperty->setValue($object, $attribute);
+        }
+
+        return $object;
     }
 
     public static function createSchema() : string

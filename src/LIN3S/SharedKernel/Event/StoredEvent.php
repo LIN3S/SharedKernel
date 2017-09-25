@@ -13,58 +13,43 @@ declare(strict_types=1);
 
 namespace LIN3S\SharedKernel\Event;
 
-use App\Domain\Model\Post\PostId;
-use App\Domain\Model\Post\PostWasCreated;
 use LIN3S\SharedKernel\Domain\Model\DomainEvent;
 use LIN3S\SharedKernel\Exception\InvalidArgumentException;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class StoredEvent
+class StoredEvent implements \JsonSerializable
 {
-    private $id;
+    private $order;
     private $type;
     private $payload;
+    private $serializedEvent;
     private $occurredOn;
     private $streamName;
     private $streamVersion;
 
-    public static function fromDomainEvent(DomainEvent $event, StreamName $name, StreamVersion $version) : self
+    public function __construct(DomainEvent $event, StreamName $name, StreamVersion $version)
     {
-        $instance = new self(get_class($event), $event->occurredOn(), $name, $version);
-        $instance->setPayload($event);
-
-        return $instance;
-    }
-
-    private function setPayload(DomainEvent $event) : void
-    {
-        $this->payload = [];
-        $eventReflection = new \ReflectionClass($event);
-        foreach ($eventReflection->getProperties() as $property) {
-            if ('occurredOn' === $property->name) {
-                continue;
-            }
-            $property->setAccessible(true);
-            $this->payload[$property->getName()] = $this->serialize($property, $event);
-        }
-        $this->payload = json_encode($this->payload);
-    }
-
-    private function __construct(string $type, \DateTimeInterface $occurredOn, StreamName $name, StreamVersion $version)
-    {
-        $this->type = $type;
-        $this->setOccurredOn($occurredOn);
+        $this->type = get_class($event);
+        $this->setOccurredOn($event->occurredOn());
         $this->streamName = $name->name();
         $this->streamVersion = $version->version();
+
+        $this->setPayload($event);
+        $this->setSerializedEvent($event);
     }
 
-    private function setOccurredOn(\DateTimeInterface $occurredOn) : void
+    public function jsonSerialize() : array
     {
-        $this->checkDateTimeIsValid($occurredOn);
-        $occurredOn->setTimezone(new \DateTimeZone('UTC'));
-        $this->occurredOn = $occurredOn->getTimestamp();
+        return [
+            'order'          => $this->order,
+            'type'           => $this->formatType(),
+            'occurred_on'    => $this->occurredOn,
+            'payload'        => $this->serializedEvent,
+            'stream_name'    => $this->streamName,
+            'stream_version' => $this->streamVersion,
+        ];
     }
 
     public function toArray() : array
@@ -78,6 +63,40 @@ class StoredEvent
         ];
     }
 
+    private function setPayload(DomainEvent $event) : void
+    {
+        $this->payload = [];
+        $eventReflection = new \ReflectionClass($event);
+        foreach ($eventReflection->getProperties() as $property) {
+            if ('occurredOn' === $property->getName()) {
+                continue;
+            }
+            $property->setAccessible(true);
+            $this->payload[$property->getName()] = $this->serializePayload($property, $event);
+        }
+        $this->payload = json_encode($this->payload);
+    }
+
+    private function setSerializedEvent(DomainEvent $event) : void
+    {
+        $this->serializedEvent = [];
+        $eventReflection = new \ReflectionClass($event);
+        foreach ($eventReflection->getProperties() as $property) {
+            if ('occurredOn' === $property->getName()) {
+                continue;
+            }
+            $property->setAccessible(true);
+            $this->serializedEvent[$property->getName()] = $this->serializeEvent($property, $event);
+        }
+    }
+
+    private function setOccurredOn(\DateTimeInterface $occurredOn) : void
+    {
+        $this->checkDateTimeIsValid($occurredOn);
+        $occurredOn->setTimezone(new \DateTimeZone('UTC'));
+        $this->occurredOn = $occurredOn->getTimestamp();
+    }
+
     private function checkDateTimeIsValid(\DateTimeInterface $occurredOn) : void
     {
         if (!($occurredOn instanceof \DateTimeImmutable) && !($occurredOn instanceof \DateTime)) {
@@ -85,7 +104,7 @@ class StoredEvent
         }
     }
 
-    private function serialize(\ReflectionProperty $property, $object, array $result = [])
+    private function serializePayload(\ReflectionProperty $property, $object, array $result = [])
     {
         $property->setAccessible(true);
         $value = $property->getValue($object);
@@ -98,9 +117,33 @@ class StoredEvent
         $properties = $reflectionClass->getProperties();
 
         foreach ($properties as $property) {
-            $result[$className][$property->getName()] = $this->serialize($property, $value);
+            $result[$className][$property->getName()] = $this->serializePayload($property, $value);
         }
 
         return $result;
+    }
+
+    private function serializeEvent(\ReflectionProperty $property, $object, array $result = [])
+    {
+        $property->setAccessible(true);
+        $value = $property->getValue($object);
+        if (is_scalar($value)) {
+            return $value;
+        }
+
+        $className = get_class($value);
+        $reflectionClass = new \ReflectionClass($value);
+        $properties = $reflectionClass->getProperties();
+
+        foreach ($properties as $property) {
+            $result = $this->serializeEvent($property, $value, $result);
+        }
+
+        return $result;
+    }
+
+    private function formatType() : string
+    {
+        return mb_strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', array_reverse(explode('\\', $this->type))[0]));
     }
 }

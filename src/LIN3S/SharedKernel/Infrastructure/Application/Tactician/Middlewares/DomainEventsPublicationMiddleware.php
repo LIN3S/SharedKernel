@@ -48,7 +48,7 @@ class DomainEventsPublicationMiddleware implements Middleware
             foreach ($aggregate as $aggregateId => $domainEvents) {
                 $this->eventStore->append(
                     new Stream(
-                        new StreamName(AggregateId::generate($aggregateId), $name),
+                        StreamName::from(AggregateId::generate($aggregateId), $name),
                         $this->streamVersion(),
                         new DomainEventCollection($domainEvents)
                     )
