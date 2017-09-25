@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace LIN3S\SharedKernel\Infrastructure\Persistence\Sql\Event;
 
 use LIN3S\SharedKernel\Domain\Model\DomainEvent;
-use LIN3S\SharedKernel\Domain\Model\DomainEventCollection;
 use LIN3S\SharedKernel\Event\EventStore;
 use LIN3S\SharedKernel\Event\StoredEvent;
 use LIN3S\SharedKernel\Event\Stream;
@@ -41,7 +40,7 @@ final class SqlEventStore implements EventStore
     {
         $storedEvents = [];
         foreach ($stream->events() as $event) {
-            $storedEvents[] = StoredEvent::fromDomainEvent($event, $stream->name(), $stream->version());
+            $storedEvents[] = new StoredEvent($event, $stream->name(), $stream->version());
         }
 
         $numberOfEvents = count($storedEvents);
@@ -52,7 +51,7 @@ final class SqlEventStore implements EventStore
         $this->pdo->insert(self::TABLE_NAME, self::COLUMN_NAMES, $numberOfEvents, function () use ($storedEvents) {
             $data = [];
             foreach ($storedEvents as $event) {
-                $data = array_merge($data, $event->persistableToArray());
+                $data = array_merge($data, $event->toArray());
             }
 
             return $data;
@@ -91,31 +90,16 @@ SQL;
     private function buildStoredEvents(array $storedEventRows) : array
     {
         $events = [];
-//        $reflectedStoredEvent = new \ReflectionClass(StoredEvent::class);
         foreach ($storedEventRows as $storedEventRow) {
-            $storedEvent = StoredEvent::fromDomainEvent(
+            $storedEvent = new StoredEvent(
                 $this->buildDomainEvent($storedEventRow),
                 StreamName::fromName($storedEventRow['stream_name']),
                 new StreamVersion((int) $storedEventRow['stream_version'])
             );
-//            $storedEvent = $reflectedStoredEvent->newInstanceWithoutConstructor();
-//
-//            foreach ($reflectedStoredEvent->getProperties() as $property) {
-//                $property->setAccessible(true);
-//                if ($property->getName() === 'id') {
-//                    $property->setValue($storedEvent, $storedEventRow['order']);
-//                } elseif ($property->getName() === 'type') {
-//                    $property->setValue($storedEvent, $storedEventRow['type']);
-//                } elseif ($property->getName() === 'occurredOn') {
-//                    $property->setValue($storedEvent, $storedEventRow['occurred_on']);
-//                } elseif ($property->getName() === 'payload') {
-//                    $property->setValue($storedEvent, $this->buildDomainEvent($storedEventRow));
-//                } elseif ($property->getName() === 'streamName') {
-//                    $property->setValue($storedEvent, $storedEventRow['stream_name']);
-//                } elseif ($property->getName() === 'streamVersion') {
-//                    $property->setValue($storedEvent, $storedEventRow['stream_version']);
-//                }
-//            }
+            $orderProperty = new \ReflectionProperty(StoredEvent::class, 'order');
+            $orderProperty->setAccessible(true);
+            $orderProperty->setValue($storedEvent, $storedEventRow['order']);
+
             $events[] = $storedEvent;
         }
 
@@ -132,7 +116,7 @@ SQL;
         foreach ($eventReflection->getProperties() as $property) {
             $property->setAccessible(true);
 
-            if ($property->getName() === 'occurredOn') {
+            if ('occurredOn' === $property->getName()) {
                 $occurredOn = new \DateTimeImmutable();
                 $occurredOn->setTimestamp((int) $storedEventRow['occurred_on']);
                 $property->setValue($domainEvent, $occurredOn);

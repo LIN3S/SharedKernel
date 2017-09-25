@@ -10,3 +10,4 @@ services:
         class: LIN3S\SharedKernel\Application\Event\GetEvents
         arguments:
             - "@lin3s.persistence.sql.event_store"
+            - "@lin3s.routing.symfony.events_url_generator"

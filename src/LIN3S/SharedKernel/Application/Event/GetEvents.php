@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace LIN3S\SharedKernel\Application\Event;
 
+use LIN3S\SharedKernel\Domain\Model\EventsUrlGenerator;
 use LIN3S\SharedKernel\Event\EventStore;
 
 /**
@@ -21,10 +22,12 @@ use LIN3S\SharedKernel\Event\EventStore;
 class GetEvents
 {
     private $eventStore;
+    private $urlGenerator;
 
-    public function __construct(EventStore $eventStore)
+    public function __construct(EventStore $eventStore, EventsUrlGenerator $urlGenerator)
     {
         $this->eventStore = $eventStore;
+        $this->urlGenerator = $urlGenerator;
     }
 
     public function __invoke(GetEventsQuery $query) : array
@@ -37,8 +40,40 @@ class GetEvents
 
         $events = $this->eventStore->eventsSince($since, $offset, $pageSize);
 
-        dump($events);die;
+        return $this->response($events, $page, $pageSize);
+    }
 
-        return $this->response->build($events, $page, $pageSize);
+    public function response(array $events, int $page, int $pageSize) : array
+    {
+        return [
+            '_meta'  => [
+                'count' => $this->numberOfEvents($events),
+                'page'  => $page,
+            ],
+            '_links' => $this->links($events, $page, $pageSize),
+            'data'   => $events,
+        ];
+    }
+
+    private function numberOfEvents(array $events) : int
+    {
+        return count($events);
+    }
+
+    private function links(array $events, int $page, int $pageSize) : array
+    {
+        $links = [
+            'first' => $this->urlGenerator->generate(1),
+            'self'  => $this->urlGenerator->generate($page),
+        ];
+        if ($this->numberOfEvents($events) === $pageSize) {
+            $links = array_merge(
+                ['first' => $this->urlGenerator->generate(1)],
+                ['self' => $links['self']],
+                ['next' => $this->urlGenerator->generate($page + 1)]
+            );
+        }
+
+        return $links;
     }
 }

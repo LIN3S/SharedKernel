@@ -5,8 +5,9 @@
 # For the full copyright and license information, please view the LICENSE
 # file that was distributed with this source code.
 
-imports:
-    - { resource: services/http_actions.yml }
-    - { resource: services/persistence.yml }
-    - { resource: services/queries.yml }
-    - { resource: services/routing.yml }
+services:
+    lin3s.routing.symfony.events_url_generator:
+        class: LIN3S\SharedKernel\Infrastructure\Routing\Symfony\SymfonyEventsUrlGenerator
+        arguments:
+            - "@router"
+            - "lin3s_list_events"

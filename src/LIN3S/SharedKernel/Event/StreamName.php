@@ -25,7 +25,7 @@ class StreamName
 
     public static function fromName(string $name) : self
     {
-        list($name, $aggregateId) = explode('-', $name);
+        list($name, $aggregateId) = explode('-', $name, 2);
 
         return new self($aggregateId, $name);
     }

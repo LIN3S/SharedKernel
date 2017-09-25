@@ -11,16 +11,12 @@
 
 declare(strict_types=1);
 
-namespace LIN3S\SharedKernel\Event;
+namespace LIN3S\SharedKernel\Domain\Model;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-interface EventStore
+interface EventsUrlGenerator
 {
-    public function append(Stream $stream) : void;
-
-    public function streamOfName(StreamName $name) : Stream;
-
-    public function eventsSince(?\DateTimeInterface $since, int $offset = 0, int $limit = -1) : array;
+    public function generate(int $page) : string;
 }

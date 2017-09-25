@@ -38,13 +38,7 @@ trait TriggerEvents
     {
         $this->apply($event);
         $this->record($event);
-        DomainEventPublisher::instance()->publish(
-            new PublishableDomainEvent(
-                $this->id(),
-                mb_strtolower(array_reverse(explode('\\', get_class($this)))[0]),
-                $event
-            )
-        );
+        DomainEventPublisher::instance()->publish($event);
     }
 
     protected function apply(DomainEvent $event) : void

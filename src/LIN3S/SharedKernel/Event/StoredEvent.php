@@ -13,17 +13,15 @@ declare(strict_types=1);
 
 namespace LIN3S\SharedKernel\Event;
 
-use App\Domain\Model\Post\PostId;
-use App\Domain\Model\Post\PostWasCreated;
 use LIN3S\SharedKernel\Domain\Model\DomainEvent;
 use LIN3S\SharedKernel\Exception\InvalidArgumentException;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class StoredEvent
+class StoredEvent implements \JsonSerializable
 {
-    private $id;
+    private $order;
     private $type;
     private $payload;
     private $serializedEvent;
@@ -31,13 +29,38 @@ class StoredEvent
     private $streamName;
     private $streamVersion;
 
-    public static function fromDomainEvent(DomainEvent $event, StreamName $name, StreamVersion $version) : self
+    public function __construct(DomainEvent $event, StreamName $name, StreamVersion $version)
     {
-        $instance = new self(get_class($event), $event->occurredOn(), $name, $version);
-        $instance->setPayload($event);
-        $instance->setSerializedEvent($event);
+        $this->type = get_class($event);
+        $this->setOccurredOn($event->occurredOn());
+        $this->streamName = $name->name();
+        $this->streamVersion = $version->version();
 
-        return $instance;
+        $this->setPayload($event);
+        $this->setSerializedEvent($event);
+    }
+
+    public function jsonSerialize() : array
+    {
+        return [
+            'order'          => $this->order,
+            'type'           => $this->formatType(),
+            'occurred_on'    => $this->occurredOn,
+            'payload'        => $this->serializedEvent,
+            'stream_name'    => $this->streamName,
+            'stream_version' => $this->streamVersion,
+        ];
+    }
+
+    public function toArray() : array
+    {
+        return [
+            $this->type,
+            $this->payload,
+            $this->occurredOn,
+            $this->streamName,
+            $this->streamVersion,
+        ];
     }
 
     private function setPayload(DomainEvent $event) : void
@@ -67,42 +90,11 @@ class StoredEvent
         }
     }
 
-    private function __construct(string $type, \DateTimeInterface $occurredOn, StreamName $name, StreamVersion $version)
-    {
-        $this->type = $type;
-        $this->setOccurredOn($occurredOn);
-        $this->streamName = $name->name();
-        $this->streamVersion = $version->version();
-    }
-
     private function setOccurredOn(\DateTimeInterface $occurredOn) : void
     {
         $this->checkDateTimeIsValid($occurredOn);
         $occurredOn->setTimezone(new \DateTimeZone('UTC'));
         $this->occurredOn = $occurredOn->getTimestamp();
-    }
-
-    public function toArray() : array
-    {
-        return [
-            'order'          => $this->id,
-            'type'           => $this->type,
-            'occurred_on'    => $this->occurredOn,
-            'payload'        => $this->serializedEvent,
-            'stream_name'    => $this->streamName,
-            'stream_version' => $this->streamVersion,
-        ];
-    }
-
-    public function persistableToArray() : array
-    {
-        return [
-            $this->type,
-            $this->payload,
-            $this->occurredOn,
-            $this->streamName,
-            $this->streamVersion,
-        ];
     }
 
     private function checkDateTimeIsValid(\DateTimeInterface $occurredOn) : void
@@ -143,10 +135,15 @@ class StoredEvent
         $reflectionClass = new \ReflectionClass($value);
         $properties = $reflectionClass->getProperties();
 
-        foreach ($properties as $childProperty) {
-            $result[$property->getName()] = $this->serializeEvent($property, $value);
+        foreach ($properties as $property) {
+            $result = $this->serializeEvent($property, $value, $result);
         }
 
         return $result;
+    }
+
+    private function formatType() : string
+    {
+        return mb_strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', array_reverse(explode('\\', $this->type))[0]));
     }
 }
