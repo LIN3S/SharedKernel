@@ -16,10 +16,8 @@ namespace LIN3S\SharedKernel\Infrastructure\Application\Tactician\Middlewares;
 use League\Tactician\Middleware;
 use LIN3S\SharedKernel\Domain\Event\CollectInMemoryDomainEventsSubscriber;
 use LIN3S\SharedKernel\Domain\Event\DomainEventPublisher;
-use LIN3S\SharedKernel\Domain\Model\DomainEventCollection;
-use LIN3S\SharedKernel\Event\AggregateId;
 use LIN3S\SharedKernel\Event\EventStore;
-use LIN3S\SharedKernel\Event\Stream;
+use LIN3S\SharedKernel\Event\StoredEvent;
 use LIN3S\SharedKernel\Event\StreamName;
 use LIN3S\SharedKernel\Event\StreamVersion;
 
@@ -43,18 +41,17 @@ class DomainEventsPublicationMiddleware implements Middleware
 
         $returnValue = $next($command);
 
-        $eventsPerAggregate = $collectDomainEventsSubscriber->events();
-        foreach ($eventsPerAggregate as $name => $aggregate) {
-            foreach ($aggregate as $aggregateId => $domainEvents) {
-                $this->eventStore->append(
-                    new Stream(
-                        StreamName::from(AggregateId::generate($aggregateId), $name),
-                        $this->streamVersion(),
-                        new DomainEventCollection($domainEvents)
-                    )
-                );
-            }
+        $publishableEvents = $collectDomainEventsSubscriber->events();
+        $storedEvents = [];
+        foreach ($publishableEvents as $publishableEvent) {
+            $storedEvents[] = new StoredEvent(
+                $publishableEvent->event(),
+                StreamName::from($publishableEvent->aggregateId(), $publishableEvent->name()),
+                $this->streamVersion()
+            );
         }
+
+        $this->eventStore->append(...$storedEvents);
 
         return $returnValue;
     }

@@ -18,7 +18,7 @@ namespace LIN3S\SharedKernel\Event;
  */
 interface EventStore
 {
-    public function append(Stream $stream) : void;
+    public function append(StoredEvent ...$events) : void;
 
     public function streamOfName(StreamName $name) : Stream;
 

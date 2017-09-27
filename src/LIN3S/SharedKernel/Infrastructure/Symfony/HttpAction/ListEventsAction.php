@@ -42,7 +42,7 @@ class ListEventsAction
         $events = $this->getEvents->__invoke(new GetEventsQuery($page, self::PAGE_SIZE, $since));
 
         $numberOfEvents = count($events['data']);
-        $isPageCompleted = $numberOfEvents === self::PAGE_SIZE;
+        $isPageCompleted = self::PAGE_SIZE === $numberOfEvents;
         $response = new JsonResponse($events, 0 !== $numberOfEvents ? 200 : 404);
 
         return $isPageCompleted ? $this->cachedResponse($response) : $response;

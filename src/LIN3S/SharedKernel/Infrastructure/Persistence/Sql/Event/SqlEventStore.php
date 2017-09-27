@@ -36,21 +36,16 @@ final class SqlEventStore implements EventStore
         $this->pdo = $pdo;
     }
 
-    public function append(Stream $stream) : void
+    public function append(StoredEvent ...$events) : void
     {
-        $storedEvents = [];
-        foreach ($stream->events() as $event) {
-            $storedEvents[] = new StoredEvent($event, $stream->name(), $stream->version());
-        }
-
-        $numberOfEvents = count($storedEvents);
+        $numberOfEvents = count($events);
         if (0 === $numberOfEvents) {
             return;
         }
 
-        $this->pdo->insert(self::TABLE_NAME, self::COLUMN_NAMES, $numberOfEvents, function () use ($storedEvents) {
+        $this->pdo->insert(self::TABLE_NAME, self::COLUMN_NAMES, $numberOfEvents, function () use ($events) {
             $data = [];
-            foreach ($storedEvents as $event) {
+            foreach ($events as $event) {
                 $data = array_merge($data, $event->toArray());
             }
 
