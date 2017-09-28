@@ -14,50 +14,38 @@ declare(strict_types=1);
 namespace LIN3S\SharedKernel\Infrastructure\Application\Tactician\Middlewares;
 
 use League\Tactician\Middleware;
+use LIN3S\SharedKernel\Application\EventBus;
 use LIN3S\SharedKernel\Domain\Event\CollectInMemoryDomainEventsSubscriber;
 use LIN3S\SharedKernel\Domain\Event\DomainEventPublisher;
-use LIN3S\SharedKernel\Event\EventStore;
-use LIN3S\SharedKernel\Event\StoredEvent;
-use LIN3S\SharedKernel\Event\StreamName;
-use LIN3S\SharedKernel\Event\StreamVersion;
+use LIN3S\SharedKernel\Domain\Model\PublishableDomainEvent;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
 class DomainEventsPublicationMiddleware implements Middleware
 {
-    private $eventStore;
+    private $eventBus;
 
-    public function __construct(EventStore $eventStore)
+    public function __construct(EventBus $eventBus)
     {
-        $this->eventStore = $eventStore;
+        $this->eventBus = $eventBus;
     }
 
     public function execute($command, callable $next)
     {
-        $domainEventPublisher = DomainEventPublisher::instance();
-        $collectDomainEventsSubscriber = new CollectInMemoryDomainEventsSubscriber();
-        $domainEventPublisher->subscribe($collectDomainEventsSubscriber);
-
         $returnValue = $next($command);
 
+        $collectDomainEventsSubscriber = DomainEventPublisher::instance()->subscriberOfClassName(
+            CollectInMemoryDomainEventsSubscriber::class
+        );
         $publishableEvents = $collectDomainEventsSubscriber->events();
-        $storedEvents = [];
-        foreach ($publishableEvents as $publishableEvent) {
-            $storedEvents[] = new StoredEvent(
-                $publishableEvent->event(),
-                StreamName::from($publishableEvent->aggregateId(), $publishableEvent->name()),
-                $this->streamVersion()
-            );
-        }
 
-        $this->eventStore->append(...$storedEvents);
+        $domainEvents = array_map(function (PublishableDomainEvent $publishableDomainEvent) {
+            return $publishableDomainEvent->event();
+        }, $publishableEvents);
+
+        $this->eventBus->publish(...$domainEvents);
 
         return $returnValue;
-    }
-
-    private function streamVersion() : StreamVersion
-    {
-        return new StreamVersion(1);    // TODO: This value is hardcoded for now.
     }
 }

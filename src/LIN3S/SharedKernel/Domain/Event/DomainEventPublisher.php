@@ -43,9 +43,14 @@ final class DomainEventPublisher
         return static::$instance;
     }
 
+    public function subscriberOfClassName(string $className) : DomainEventSubscriber
+    {
+        return $this->subscribers[$className];
+    }
+
     public function subscribe(DomainEventSubscriber $domainEventSubscriber) : void
     {
-        $this->subscribers[] = $domainEventSubscriber;
+        $this->subscribers[get_class($domainEventSubscriber)] = $domainEventSubscriber;
     }
 
     public function publish(DomainEvent $domainEvent) : void

@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace LIN3S\SharedKernel\Infrastructure\Symfony\Bundle\DependencyInjection\Compiler;
 
 use League\Tactician\Bundle\TacticianBundle;
+use LIN3S\SharedKernel\Infrastructure\Application\Tactician\Middlewares\AppendDomainEventsToStoreMiddleware;
 use LIN3S\SharedKernel\Infrastructure\Application\Tactician\Middlewares\DomainEventsPublicationMiddleware;
 use LIN3S\SharedKernel\Infrastructure\Application\Tactician\Middlewares\PdoTransactionMiddleware;
 use LIN3S\SharedKernel\Infrastructure\Application\Tactician\TacticianCommandBus;
@@ -25,7 +26,7 @@ use Symfony\Component\DependencyInjection\Reference;
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class TacticianPass implements CompilerPassInterface
+class TacticianCommandBusPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container) : void
     {
@@ -46,9 +47,15 @@ class TacticianPass implements CompilerPassInterface
             ])
         );
         $container->setDefinition(
+            'lin3s.tactician_middleware.append_domain_events_to_store',
+            new Definition(AppendDomainEventsToStoreMiddleware::class, [
+                new Reference('lin3s.persistence.sql.event_store'),
+            ])
+        );
+        $container->setDefinition(
             'lin3s.tactician_middleware.domain_events_publication',
             new Definition(DomainEventsPublicationMiddleware::class, [
-                new Reference('lin3s.persistence.sql.event_store'),
+                new Reference('lin3s.event_bus')
             ])
         );
     }
