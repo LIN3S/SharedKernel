@@ -153,7 +153,7 @@ SQL;
 CREATE TABLE IF NOT EXISTS `$tableName` (
   `order` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `type` VARCHAR(150) COLLATE utf8_bin NOT NULL,
-  `payload` JSON NOT NULL,
+  `payload` LONGTEXT NOT NULL,
   `occurred_on` INT(10) NOT NULL,
   `stream_name` VARCHAR(255) NOT NULL,
   `stream_version` INT NOT NULL,
