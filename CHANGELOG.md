@@ -3,9 +3,9 @@
 This changelog references the relevant changes done between versions.
 
 To get the diff for a specific change, go to https://github.com/LIN3S/SharedKernel/commit/XXX where XXX is the change hash 
-To get the diff between two versions, go to https://github.com/LIN3S/SharedKernel/compare/v0.3.0...v0.4.0
+To get the diff between two versions, go to https://github.com/LIN3S/SharedKernel/compare/v0.4.0...v0.5.0
 
-* 0.4.0
+* 0.5.0
     * Added `/events` endpoint to consume via REST the domain events.
     * Added stream version concept to the event store.
     * Removed datetime custom API extending the PHP native `DateTimeImmutable` class.
@@ -16,6 +16,7 @@ To get the diff between two versions, go to https://github.com/LIN3S/SharedKerne
     * Added PDO wrapper and sql connection factory.
     * Added DomainEventPublisher and added Tactician middleware to publish domain events after command execution.
     * Added support for Tactician command bus with PDO middleware.
+* 0.4.0
     * Added locale value object.
     * Added zip code and phone value objects.
 * 0.3.0
