@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace LIN3S\SharedKernel\Domain\Model\Phone;
 
 use libphonenumber\NumberParseException;
+use libphonenumber\PhoneNumber;
 use libphonenumber\PhoneNumberFormat;
 use libphonenumber\PhoneNumberUtil;
 
@@ -24,51 +25,52 @@ class Phone
 {
     private $phone;
 
-    public static function fromInternatinal($phone)
+    public static function fromInternational($phone) : self
     {
         return new self($phone);
     }
 
-    public static function fromRegion($region, $phone)
+    public static function fromRegion($region, $phone) : self
     {
         return new self($phone, $region);
     }
 
-    public static function fromSpain($phone)
+    public static function fromSpain($phone) : self
     {
         return new self($phone, 'ES');
     }
 
-    private function __construct($phone, $region = null)
+    private function __construct($phone, string $region = null)
     {
         $this->setPhone($phone, $region);
     }
 
-    public function equals(Phone $phone)
+    public function equals(Phone $phone) : bool
     {
         return $this->phone() === $phone->phone();
     }
 
-    public function phone()
+    public function phone() : string
     {
         return PhoneNumberUtil::getInstance()->format($this->phone, PhoneNumberFormat::E164);
     }
 
-    public function phoneCallingFrom($region)
+    public function phoneCallingFrom($region) : string
     {
-        return PhoneNumberUtil::getInstance()->formatOutOfCountryCallingNumber($this->phoneNumber, $regionCode);
+        return PhoneNumberUtil::getInstance()->formatOutOfCountryCallingNumber($this->phone, $region);
     }
 
-    public function __toString()
+    public function __toString() : string
     {
         return (string) $this->phone();
     }
 
-    private function setPhone($phone, $region = null)
+    private function setPhone($phone, ?string $region) : void
     {
         try {
-            $this->phone = PhoneNumberUtil::getInstance()->parse($phone, $region);
-            $this->checkIsValidNumber($this->phone);
+            $phone = PhoneNumberUtil::getInstance()->parse($phone, $region);
+            $this->checkIsValidNumber($phone);
+            $this->phone = $phone;
         } catch (NumberParseException $exception) {
             throw new PhoneInvalidFormatException(
                 $exception->getMessage()
@@ -76,9 +78,9 @@ class Phone
         }
     }
 
-    private function checkIsValidNumber($phone, $region = null)
+    private function checkIsValidNumber(PhoneNumber $phone) : void
     {
-        if (!PhoneNumberUtil::getInstance()->isValidNumber($this->phone)) {
+        if (!PhoneNumberUtil::getInstance()->isValidNumber($phone)) {
             throw new PhoneInvalidFormatException();
         }
     }
