@@ -17,7 +17,6 @@ use LIN3S\SharedKernel\Application\Event\GetEvents;
 use LIN3S\SharedKernel\Application\Event\GetEventsQuery;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
@@ -48,7 +47,7 @@ class ListEventsAction
         return $isPageCompleted ? $this->cachedResponse($response) : $response;
     }
 
-    private function cachedResponse(Response $response) : Response
+    private function cachedResponse(JsonResponse $response) : JsonResponse
     {
         return $response
             ->setMaxAge(self::CACHE_LIFETIME)
