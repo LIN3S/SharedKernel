@@ -33,12 +33,40 @@ final class Pdo
         return $this->execute($sql, $parameters)->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    public function singleQuery(string $sql, array $parameters) : ?array
+    {
+        $result = $this->execute($sql, $parameters)->fetch(\PDO::FETCH_ASSOC);
+
+        return false === $result ? null : $result;
+    }
+
     public function insert($table, $columns, $numberOfInsertions, callable $prepareData) : void
     {
         $rowPlaces = '(' . implode(', ', array_fill(0, count($columns), '?')) . ')';
         $allPlaces = implode(', ', array_fill(0, $numberOfInsertions, $rowPlaces));
 
         $sql = 'INSERT INTO ' . $table . ' (' . implode(', ', $columns) . ') VALUES ' . $allPlaces;
+
+        $this->execute($sql, call_user_func($prepareData));
+    }
+
+    public function update($table, $columns, $numberOfUpdates, callable $prepareData) : void
+    {
+        $sql = 'UPDATE ' . $table . ' SET(';
+        $updates = 0;
+        foreach ($columns as $column => $value) {
+            if ($updates !== 0) {
+                $sql .= ',';
+            }
+
+            if ($updates === $numberOfUpdates) {
+                break;
+            }
+
+            $sql .= $column . '=' . $value;
+            $updates++;
+        }
+        $sql .= ")";
 
         $this->execute($sql, call_user_func($prepareData));
     }
