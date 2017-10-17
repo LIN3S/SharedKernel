@@ -131,12 +131,11 @@ class StoredEvent implements \JsonSerializable
             return $value;
         }
 
-        $className = get_class($value);
         $reflectionClass = new \ReflectionClass($value);
         $properties = $reflectionClass->getProperties();
 
         foreach ($properties as $property) {
-            $result = $this->serializeEvent($property, $value, $result);
+            $result[] = $this->serializeEvent($property, $value, $result);
         }
 
         return $result;
