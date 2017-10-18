@@ -28,47 +28,29 @@ final class Pdo
         $this->pdo->setAttribute($this->pdo::ATTR_ERRMODE, $this->pdo::ERRMODE_EXCEPTION);
     }
 
-    public function query(string $sql, array $parameters) : array
+    public function query(string $sql, array $parameters = []) : array
     {
         return $this->execute($sql, $parameters)->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function singleQuery(string $sql, array $parameters) : ?array
+    public function insert(string $table, array $parameters) : void
     {
-        $result = $this->execute($sql, $parameters)->fetch(\PDO::FETCH_ASSOC);
+        if (!is_array($parameters[0])) {
+            $parameters = [$parameters];
+        }
 
-        return false === $result ? null : $result;
-    }
-
-    public function insert($table, $columns, $numberOfInsertions, callable $prepareData) : void
-    {
+        $values = [];
+        foreach ($parameters as $parameter) {
+            $values = array_merge($values, array_values($parameter));
+        }
+        $numberOfInsertions = count($parameters);
+        $columns = array_keys($parameters[0]);
         $rowPlaces = '(' . implode(', ', array_fill(0, count($columns), '?')) . ')';
         $allPlaces = implode(', ', array_fill(0, $numberOfInsertions, $rowPlaces));
 
         $sql = 'INSERT INTO ' . $table . ' (' . implode(', ', $columns) . ') VALUES ' . $allPlaces;
 
-        $this->execute($sql, call_user_func($prepareData));
-    }
-
-    public function update($table, $columns, $numberOfUpdates, callable $prepareData) : void
-    {
-        $sql = 'UPDATE ' . $table . ' SET(';
-        $updates = 0;
-        foreach ($columns as $column => $value) {
-            if ($updates !== 0) {
-                $sql .= ',';
-            }
-
-            if ($updates === $numberOfUpdates) {
-                break;
-            }
-
-            $sql .= $column . '=' . $value;
-            $updates++;
-        }
-        $sql .= ")";
-
-        $this->execute($sql, call_user_func($prepareData));
+        $this->execute($sql, $values);
     }
 
     public function executeAtomically(callable $function)
