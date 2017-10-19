@@ -25,7 +25,7 @@ use PhpSpec\Matcher\BasicMatcher;
  */
 class DomainPublishedMatcher extends BasicMatcher
 {
-    protected function matches($subject, array $arguments)
+    protected function matches($subject, array $arguments) : bool
     {
         foreach ($subject->recordedEvents() as $event) {
             if ($event instanceof $arguments[0]) {
@@ -36,7 +36,7 @@ class DomainPublishedMatcher extends BasicMatcher
         return false;
     }
 
-    protected function getFailureException($name, $subject, array $arguments)
+    protected function getFailureException(string $name, $subject, array $arguments) : FailureException
     {
         return new FailureException(
             sprintf(
@@ -47,7 +47,7 @@ class DomainPublishedMatcher extends BasicMatcher
         );
     }
 
-    protected function getNegativeFailureException($name, $subject, array $arguments)
+    protected function getNegativeFailureException(string $name, $subject, array $arguments) : FailureException
     {
         return new FailureException(
             sprintf(
@@ -57,7 +57,7 @@ class DomainPublishedMatcher extends BasicMatcher
         );
     }
 
-    public function supports($name, $subject, array $arguments)
+    public function supports(string $name, $subject, array $arguments) : bool
     {
         return 'havePublished' === $name && $subject instanceof AggregateRoot;
     }

@@ -29,7 +29,7 @@ class DomainEventStub implements DomainEvent
         $this->foo = $foo;
     }
 
-    public function occurredOn()
+    public function occurredOn() : \DateTimeInterface
     {
         return new \DateTimeImmutable();
     }

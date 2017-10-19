@@ -16,7 +16,8 @@ namespace LIN3S\SharedKernel\Tests\Double\Domain\Model;
 use LIN3S\SharedKernel\Domain\Model\AggregateRoot;
 use LIN3S\SharedKernel\Domain\Model\EventSourcedAggregateRoot;
 use LIN3S\SharedKernel\Domain\Model\Identity\Id;
-use LIN3S\SharedKernel\Event\EventStream;
+use LIN3S\SharedKernel\Event\Stream;
+use LIN3S\SharedKernel\Tests\Double\Domain\Model\Identity\IdStub;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
@@ -57,11 +58,11 @@ class AggregateRootStub extends AggregateRoot implements EventSourcedAggregateRo
         $this->property = 'foo';
     }
 
-    public static function reconstitute(EventStream $events)
+    public static function reconstitute(Stream $stream) : self
     {
-        $instance = new self($events->aggregateId());
+        $instance = new self(IdStub::generate($stream->name()->aggregateId()));
 
-        foreach ($events as $event) {
+        foreach ($stream->events() as $event) {
             $instance->apply($event);
         }
 

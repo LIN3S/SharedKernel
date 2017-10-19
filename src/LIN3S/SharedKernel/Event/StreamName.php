@@ -59,6 +59,11 @@ class StreamName
         return sprintf('%s-%s', $this->name, $this->aggregateId);
     }
 
+    public function aggregateId() : string
+    {
+        return $this->aggregateId;
+    }
+
     public function __toString() : string
     {
         return (string) $this->name();

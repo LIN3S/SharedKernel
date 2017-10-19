@@ -14,9 +14,12 @@ declare(strict_types=1);
 namespace Spec\LIN3S\SharedKernel\Domain\Model;
 
 use LIN3S\SharedKernel\Domain\Model\AggregateRoot;
+use LIN3S\SharedKernel\Domain\Model\DomainEventCollection;
 use LIN3S\SharedKernel\Domain\Model\Identity\Id;
-use LIN3S\SharedKernel\Event\EventStream;
+use LIN3S\SharedKernel\Event\Stream;
+use LIN3S\SharedKernel\Event\StreamName;
 use LIN3S\SharedKernel\Tests\Double\Domain\Model\AggregateRootStub;
+use LIN3S\SharedKernel\Tests\Double\Domain\Model\DomainEventStub;
 use PhpSpec\ObjectBehavior;
 
 /**
@@ -62,9 +65,11 @@ class AggregateRootSpec extends ObjectBehavior
         $this->property()->shouldReturn('bar');
     }
 
-    function it_reconstitutes_the_aggregate_root(EventStream $events, Id $aggregateId)
+    function it_reconstitutes_the_aggregate_root(Stream $stream, StreamName $streamName)
     {
-        $events->aggregateId()->shouldBeCalled()->willReturn($aggregateId);
-        $this::reconstitute($events)->shouldReturnAnInstanceOf(AggregateRoot::class);
+        $stream->name()->shouldBeCalled()->willReturn($streamName);
+        $streamName->aggregateId()->shouldBeCalled()->willReturn('aggregate-id');
+        $stream->events()->shouldBeCalled()->willReturn(new DomainEventCollection([new DomainEventStub('foo', 'bar')]));
+        $this::reconstitute($stream)->shouldReturnAnInstanceOf(AggregateRoot::class);
     }
 }

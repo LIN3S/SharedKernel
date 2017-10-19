@@ -16,6 +16,6 @@ namespace LIN3S\SharedKernel\Domain\Model\DateTime;
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-final class DateTime extends \DateTimeImmutable
+class DateTime extends \DateTimeImmutable
 {
 }

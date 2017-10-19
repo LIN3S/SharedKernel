@@ -22,26 +22,26 @@ use PhpSpec\Matcher\BasicMatcher;
  */
 class CollectionMatcher extends BasicMatcher
 {
-    protected function matches($subject, array $arguments)
+    protected function matches($subject, array $arguments) : bool
     {
         return $subject->toArray() === $arguments[0];
     }
 
-    protected function getFailureException($name, $subject, array $arguments)
+    protected function getFailureException(string $name, $subject, array $arguments) : FailureException
     {
         return new FailureException(
             'Expected to match Collection but it doesn`t'
         );
     }
 
-    protected function getNegativeFailureException($name, $subject, array $arguments)
+    protected function getNegativeFailureException(string $name, $subject, array $arguments) : FailureException
     {
         return new FailureException(
             'Expected not to match Collection but it does'
         );
     }
 
-    public function supports($name, $subject, array $arguments)
+    public function supports(string $name, $subject, array $arguments) : bool
     {
         return 'returnCollection' === $name && $subject instanceof Collection;
     }

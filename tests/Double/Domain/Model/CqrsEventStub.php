@@ -20,7 +20,7 @@ use LIN3S\SharedKernel\Domain\Model\DomainEvent;
  */
 class CqrsEventStub implements DomainEvent
 {
-    public function occurredOn()
+    public function occurredOn() : \DateTimeInterface
     {
         return new \DateTimeImmutable();
     }

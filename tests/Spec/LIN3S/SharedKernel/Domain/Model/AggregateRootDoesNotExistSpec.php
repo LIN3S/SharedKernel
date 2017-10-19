@@ -21,7 +21,7 @@ use PhpSpec\ObjectBehavior;
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class AggregateRootDoesNotExistExceptionSpec extends ObjectBehavior
+class AggregateRootDoesNotExistSpec extends ObjectBehavior
 {
     function let(Id $aggregateId)
     {

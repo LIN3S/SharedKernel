@@ -16,28 +16,14 @@ namespace Spec\LIN3S\SharedKernel\Domain\Model\DateTime;
 use LIN3S\SharedKernel\Domain\Model\DateTime\DateTime;
 use PhpSpec\ObjectBehavior;
 
+/**
+ * @author Beñat Espiña <benatespina@gmail.com>
+ */
 class DateTimeSpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
         $this->shouldHaveType(DateTime::class);
-    }
-
-    function it_builds_now()
-    {
-        $this->beConstructedNow();
-        $this->shouldHaveType(\DateTimeImmutable::class);
-    }
-
-    function it_builds_from_time()
-    {
-        $this->beConstructedFromTime('2016-10-11');
-        $this->shouldHaveType(\DateTimeImmutable::class);
-    }
-
-    function it_builds_from_relative()
-    {
-        $this->beConstructedFromRelative('+7 days');
         $this->shouldHaveType(\DateTimeImmutable::class);
     }
 }

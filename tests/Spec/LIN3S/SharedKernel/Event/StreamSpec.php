@@ -14,8 +14,9 @@ declare(strict_types=1);
 namespace Spec\LIN3S\SharedKernel\Event;
 
 use LIN3S\SharedKernel\Domain\Model\DomainEventCollection;
-use LIN3S\SharedKernel\Domain\Model\Identity\Id;
 use LIN3S\SharedKernel\Event\Stream;
+use LIN3S\SharedKernel\Event\StreamName;
+use LIN3S\SharedKernel\Event\StreamVersion;
 use PhpSpec\ObjectBehavior;
 
 /**
@@ -23,11 +24,12 @@ use PhpSpec\ObjectBehavior;
  */
 class StreamSpec extends ObjectBehavior
 {
-    function it_can_be_created(Id $aggregateId, DomainEventCollection $events)
+    function it_can_be_created(StreamName $streamName, StreamVersion $streamVersion, DomainEventCollection $events)
     {
-        $this->beConstructedWith($aggregateId, $events);
+        $this->beConstructedWith($streamName, $streamVersion, $events);
         $this->shouldHaveType(Stream::class);
-        $this->aggregateId()->shouldReturn($aggregateId);
+        $this->name()->shouldReturn($streamName);
+        $this->version()->shouldReturn($streamVersion);
         $this->events()->shouldReturn($events);
     }
 }
