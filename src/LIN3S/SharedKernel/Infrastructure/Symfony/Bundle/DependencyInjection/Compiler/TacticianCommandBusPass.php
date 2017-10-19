@@ -55,7 +55,7 @@ class TacticianCommandBusPass implements CompilerPassInterface
         $container->setDefinition(
             'lin3s.tactician_middleware.domain_events_publication',
             new Definition(DomainEventsPublicationMiddleware::class, [
-                new Reference('lin3s.event_bus')
+                new Reference('lin3s.event_bus'),
             ])
         );
     }
