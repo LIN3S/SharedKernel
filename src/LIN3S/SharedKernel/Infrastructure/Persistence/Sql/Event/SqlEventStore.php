@@ -36,24 +36,29 @@ final class SqlEventStore implements EventStore
         $this->pdo = $pdo;
     }
 
-    public function append(StoredEvent ...$events) : void
+    public function append(StoredEvent ...$events): void
     {
         $numberOfEvents = count($events);
         if (0 === $numberOfEvents) {
             return;
         }
 
-        $this->pdo->insert(self::TABLE_NAME, self::COLUMN_NAMES, $numberOfEvents, function () use ($events) {
-            $data = [];
-            foreach ($events as $event) {
-                $data = array_merge($data, $event->toArray());
-            }
 
-            return $data;
-        });
+        $parameters = [];
+        foreach ($events as $event) {
+            $parameters[] = [
+                'type'           => $event->toArray()[0],
+                'payload'        => $event->toArray()[1],
+                'occurred_on'    => $event->toArray()[2],
+                'stream_name'    => $event->toArray()[3],
+                'stream_version' => $event->toArray()[4],
+            ];
+        }
+
+        $this->pdo->insert(self::TABLE_NAME, $parameters);
     }
 
-    public function streamOfName(StreamName $name) : Stream
+    public function streamOfName(StreamName $name): Stream
     {
         $tableName = self::TABLE_NAME;
         $sql = "SELECT * FROM `$tableName` WHERE stream_name = :streamName ORDER BY `order` ASC";
@@ -63,7 +68,7 @@ final class SqlEventStore implements EventStore
         return new Stream($name, $domainEventsCollection);
     }
 
-    public function eventsSince(?\DateTimeInterface $since, int $offset = 0, int $limit = -1) : array
+    public function eventsSince(?\DateTimeInterface $since, int $offset = 0, int $limit = -1): array
     {
         $since = null === $since ? 0 : $since->getTimestamp();
         $tableName = self::TABLE_NAME;
@@ -82,14 +87,14 @@ SQL;
         return $storedEvents;
     }
 
-    private function buildStoredEvents(array $storedEventRows) : array
+    private function buildStoredEvents(array $storedEventRows): array
     {
         $events = [];
         foreach ($storedEventRows as $storedEventRow) {
             $storedEvent = new StoredEvent(
                 $this->buildDomainEvent($storedEventRow),
                 StreamName::fromName($storedEventRow['stream_name']),
-                new StreamVersion((int) $storedEventRow['stream_version'])
+                new StreamVersion((int)$storedEventRow['stream_version'])
             );
             $orderProperty = new \ReflectionProperty(StoredEvent::class, 'order');
             $orderProperty->setAccessible(true);
@@ -101,7 +106,7 @@ SQL;
         return $events;
     }
 
-    private function buildDomainEvent(array $storedEventRow) : DomainEvent
+    private function buildDomainEvent(array $storedEventRow): DomainEvent
     {
         $type = $storedEventRow['type'];
         $payload = json_decode($storedEventRow['payload'], true);
@@ -113,7 +118,7 @@ SQL;
 
             if ('occurredOn' === $property->getName()) {
                 $occurredOn = new \DateTimeImmutable();
-                $occurredOn->setTimestamp((int) $storedEventRow['occurred_on']);
+                $occurredOn->setTimestamp((int)$storedEventRow['occurred_on']);
                 $property->setValue($domainEvent, $occurredOn);
                 continue;
             }
@@ -145,7 +150,7 @@ SQL;
         return $object;
     }
 
-    public static function createSchema() : string
+    public static function createSchema(): string
     {
         $tableName = self::TABLE_NAME;
 
@@ -162,7 +167,7 @@ CREATE TABLE IF NOT EXISTS `$tableName` (
 SQL;
     }
 
-    public static function removeSchema() : string
+    public static function removeSchema(): string
     {
         $tableName = self::TABLE_NAME;
 
