@@ -40,6 +40,17 @@ class StoredEvent implements \JsonSerializable
         $this->setSerializedEvent($event);
     }
 
+    public function normalizeToAppend() : array
+    {
+        return [
+            'type'           => $this->type,
+            'occurred_on'    => $this->occurredOn,
+            'payload'        => $this->payload,
+            'stream_name'    => $this->streamName,
+            'stream_version' => $this->streamVersion,
+        ];
+    }
+
     public function jsonSerialize() : array
     {
         return [
@@ -49,17 +60,6 @@ class StoredEvent implements \JsonSerializable
             'payload'        => $this->serializedEvent,
             'stream_name'    => $this->streamName,
             'stream_version' => $this->streamVersion,
-        ];
-    }
-
-    public function toArray() : array
-    {
-        return [
-            $this->type,
-            $this->payload,
-            $this->occurredOn,
-            $this->streamName,
-            $this->streamVersion,
         ];
     }
 
@@ -88,6 +88,8 @@ class StoredEvent implements \JsonSerializable
             $property->setAccessible(true);
             $this->serializedEvent[$property->getName()] = $this->serializeEvent($property, $event);
         }
+
+        $this->serializedEvent = json_encode($this->serializedEvent);
     }
 
     private function setOccurredOn(\DateTimeInterface $occurredOn) : void

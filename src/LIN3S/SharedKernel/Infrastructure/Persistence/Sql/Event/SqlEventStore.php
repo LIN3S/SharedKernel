@@ -16,7 +16,6 @@ namespace LIN3S\SharedKernel\Infrastructure\Persistence\Sql\Event;
 use LIN3S\SharedKernel\Domain\Model\DomainEvent;
 use LIN3S\SharedKernel\Event\EventStore;
 use LIN3S\SharedKernel\Event\StoredEvent;
-use LIN3S\SharedKernel\Event\Stream;
 use LIN3S\SharedKernel\Event\StreamName;
 use LIN3S\SharedKernel\Event\StreamVersion;
 use LIN3S\SharedKernel\Infrastructure\Persistence\Sql\Pdo;
@@ -27,7 +26,6 @@ use LIN3S\SharedKernel\Infrastructure\Persistence\Sql\Pdo;
 final class SqlEventStore implements EventStore
 {
     private const TABLE_NAME = 'events';
-    private const COLUMN_NAMES = ['type', 'payload', 'occurred_on', 'stream_name', 'stream_version'];
 
     private $pdo;
 
@@ -36,39 +34,19 @@ final class SqlEventStore implements EventStore
         $this->pdo = $pdo;
     }
 
-    public function append(StoredEvent ...$events): void
+    public function append(StoredEvent ...$events) : void
     {
         $numberOfEvents = count($events);
         if (0 === $numberOfEvents) {
             return;
         }
 
-
-        $parameters = [];
-        foreach ($events as $event) {
-            $parameters[] = [
-                'type'           => $event->toArray()[0],
-                'payload'        => $event->toArray()[1],
-                'occurred_on'    => $event->toArray()[2],
-                'stream_name'    => $event->toArray()[3],
-                'stream_version' => $event->toArray()[4],
-            ];
-        }
-
-        $this->pdo->insert(self::TABLE_NAME, $parameters);
+        $this->pdo->insert(self::TABLE_NAME, array_map(function (StoredEvent $event) {
+            return $event->normalizeToAppend();
+        }, $events));
     }
 
-    public function streamOfName(StreamName $name): Stream
-    {
-        $tableName = self::TABLE_NAME;
-        $sql = "SELECT * FROM `$tableName` WHERE stream_name = :streamName ORDER BY `order` ASC";
-        $storedEventRows = $this->pdo->query($sql, ['streamName' => $name->name()]);
-        $domainEventsCollection = $this->buildDomainEventsCollection($storedEventRows);
-
-        return new Stream($name, $domainEventsCollection);
-    }
-
-    public function eventsSince(?\DateTimeInterface $since, int $offset = 0, int $limit = -1): array
+    public function eventsSince(?\DateTimeInterface $since, int $offset = 0, int $limit = -1) : array
     {
         $since = null === $since ? 0 : $since->getTimestamp();
         $tableName = self::TABLE_NAME;
@@ -87,14 +65,14 @@ SQL;
         return $storedEvents;
     }
 
-    private function buildStoredEvents(array $storedEventRows): array
+    private function buildStoredEvents(array $storedEventRows) : array
     {
         $events = [];
         foreach ($storedEventRows as $storedEventRow) {
             $storedEvent = new StoredEvent(
                 $this->buildDomainEvent($storedEventRow),
                 StreamName::fromName($storedEventRow['stream_name']),
-                new StreamVersion((int)$storedEventRow['stream_version'])
+                new StreamVersion((int) $storedEventRow['stream_version'])
             );
             $orderProperty = new \ReflectionProperty(StoredEvent::class, 'order');
             $orderProperty->setAccessible(true);
@@ -106,7 +84,7 @@ SQL;
         return $events;
     }
 
-    private function buildDomainEvent(array $storedEventRow): DomainEvent
+    private function buildDomainEvent(array $storedEventRow) : DomainEvent
     {
         $type = $storedEventRow['type'];
         $payload = json_decode($storedEventRow['payload'], true);
@@ -118,7 +96,7 @@ SQL;
 
             if ('occurredOn' === $property->getName()) {
                 $occurredOn = new \DateTimeImmutable();
-                $occurredOn->setTimestamp((int)$storedEventRow['occurred_on']);
+                $occurredOn->setTimestamp((int) $storedEventRow['occurred_on']);
                 $property->setValue($domainEvent, $occurredOn);
                 continue;
             }
@@ -150,7 +128,7 @@ SQL;
         return $object;
     }
 
-    public static function createSchema(): string
+    public static function createSchema() : string
     {
         $tableName = self::TABLE_NAME;
 
@@ -167,7 +145,7 @@ CREATE TABLE IF NOT EXISTS `$tableName` (
 SQL;
     }
 
-    public static function removeSchema(): string
+    public static function removeSchema() : string
     {
         $tableName = self::TABLE_NAME;
 
