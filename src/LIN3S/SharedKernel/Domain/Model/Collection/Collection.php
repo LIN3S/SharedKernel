@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace LIN3S\SharedKernel\Domain\Model\Collection;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use LIN3S\SharedKernel\Domain\Model\Identity\Id;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
@@ -30,23 +31,49 @@ abstract class Collection extends ArrayCollection
         parent::__construct($elements);
     }
 
-    public function add($element)
+    public function add($element) : void
     {
-        if ($this->contains($this->validate($element))) {
+        $this->validate($element);
+
+        if ($this->contains($element)) {
             throw new CollectionElementAlreadyAddedException();
         }
         parent::add($element);
     }
 
-    public function removeElement($element)
+    public function removeElement($element) : void
     {
         if (!$this->contains($element)) {
             throw new CollectionElementAlreadyRemovedException();
         }
+        if ($element instanceof Id) {
+            foreach ($this->toArray() as $key => $el) {
+                if ($element->equals($el)) {
+                    $this->remove($key);
+                }
+            }
+
+            return;
+        }
         parent::removeElement($element);
     }
 
-    private function validate($element)
+    public function contains($element) : bool
+    {
+        if ($element instanceof Id) {
+            foreach ($this->toArray() as $el) {
+                if ($element->equals($el)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        return parent::contains($element);
+    }
+
+    private function validate($element) : void
     {
         if (is_scalar($element)
             || false === (is_subclass_of($element, $this->type())
@@ -55,7 +82,5 @@ abstract class Collection extends ArrayCollection
         ) {
             throw new CollectionElementInvalidException();
         }
-
-        return $element;
     }
 }

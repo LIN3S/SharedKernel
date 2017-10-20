@@ -35,7 +35,7 @@ final class Pdo
 
     public function insert(string $table, array $parameters) : void
     {
-        if (!is_array($parameters[0])) {
+        if (!is_array($parameters[array_keys($parameters)[0]])) {
             $parameters = [$parameters];
         }
 
@@ -44,7 +44,7 @@ final class Pdo
             $values = array_merge($values, array_values($parameter));
         }
         $numberOfInsertions = count($parameters);
-        $columns = array_keys($parameters[0]);
+        $columns = array_keys($parameters[array_keys($parameters)[0]]);
         $rowPlaces = '(' . implode(', ', array_fill(0, count($columns), '?')) . ')';
         $allPlaces = implode(', ', array_fill(0, $numberOfInsertions, $rowPlaces));
 
