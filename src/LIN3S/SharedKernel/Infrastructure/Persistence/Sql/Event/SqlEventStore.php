@@ -113,8 +113,14 @@ SQL;
 
             return $object;
         }
-
+        if (null === $value) {
+            return $object;
+        }
         $className = key($value);
+        if (null === $className || is_int($className)) {
+            return $object;
+        }
+
         $reflectedClass = new \ReflectionClass($className);
         $class = $reflectedClass->newInstanceWithoutConstructor();
         $classValues = $value[$className];
