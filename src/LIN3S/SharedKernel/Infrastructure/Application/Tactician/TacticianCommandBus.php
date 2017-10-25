@@ -21,9 +21,15 @@ use LIN3S\SharedKernel\Application\CommandBus;
  */
 class TacticianCommandBus implements CommandBus
 {
+    /**
+     * The constructor type hint is removed to satisfy the container
+     * lazy loading in the Drupal kernel with Ocramius' ProxyManager.
+     *
+     * @var Tactician
+     */
     private $commandBus;
 
-    public function __construct(Tactician $commandBus)
+    public function __construct($commandBus)
     {
         $this->commandBus = $commandBus;
     }
