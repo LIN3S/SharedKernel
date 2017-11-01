@@ -33,17 +33,17 @@ abstract class Id implements BaseId
         $this->id = null === $id ? Uuid::generate() : $id;
     }
 
-    public function id()
+    public function id() : string
     {
-        return $this->id;
+        return (string) $this->id;
     }
 
-    public function equals(Id $id)
+    public function equals(Id $id) : bool
     {
         return $this->id === $id->id();
     }
 
-    public function __toString()
+    public function __toString() : string
     {
         return (string) $this->id;
     }

@@ -6,6 +6,7 @@ To get the diff for a specific change, go to https://github.com/LIN3S/SharedKern
 To get the diff between two versions, go to https://github.com/LIN3S/SharedKernel/compare/v0.4.0...v0.5.0
 
 * 0.6.0
+    * Added missing return types to the Id VO.
     * Added `count` method to the Pdo.
     * Removed `isSubcribedTo` method from DomainEventSubscriber interface.
     * Improved event magic serialization/unserialization process.
