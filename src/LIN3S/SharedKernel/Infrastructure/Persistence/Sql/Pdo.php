@@ -33,6 +33,11 @@ final class Pdo
         return $this->execute($sql, $parameters)->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    public function count(string $sql, array $parameters = []) : int
+    {
+        return (int) $this->execute($sql, $parameters)->fetchColumn();
+    }
+
     public function insert(string $table, array $parameters) : void
     {
         if (!is_array($parameters[array_keys($parameters)[0]])) {
