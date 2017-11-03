@@ -24,6 +24,7 @@ final class ConnectionFactory
     private $port;
     private $username;
     private $password;
+    private $charset;
 
     public function __construct(
         string $driver,
@@ -31,7 +32,8 @@ final class ConnectionFactory
         string $host,
         ?string $port,
         string $username,
-        ?string $password
+        ?string $password,
+        string $charset = 'utf8'
     ) {
         $this->driver = $driver;
         $this->dbName = $dbName;
@@ -39,15 +41,22 @@ final class ConnectionFactory
         $this->port = $port;
         $this->username = $username;
         $this->password = $password;
+        $this->charset = $charset;
     }
 
     public function createConnection() : PDO
     {
-        $dsn = sprintf('%s:dbname=%s;host=%s;port=%s', $this->driver, $this->dbName, $this->host, $this->port);
+        $dsn = sprintf(
+            '%s:dbname=%s;host=%s;port=%s;charset=%s',
+            $this->driver,
+            $this->dbName,
+            $this->host,
+            $this->port,
+            $this->charset
+        );
 
         return new Pdo(
-            new \PDO($dsn, $this->username, $this->password
-            )
+            new \PDO($dsn, $this->username, $this->password)
         );
     }
 }
