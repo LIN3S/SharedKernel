@@ -40,7 +40,7 @@ abstract class Id implements BaseId
 
     public function equals(Id $id) : bool
     {
-        return $this->id === $id->id();
+        return $this->id() === $id->id();
     }
 
     public function __toString() : string
