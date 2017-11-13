@@ -35,7 +35,7 @@ final class Pdo
 
     public function count(string $sql, array $parameters = []) : int
     {
-        return (int) $this->execute($sql, $parameters)->fetchColumn();
+        return (int)$this->execute($sql, $parameters)->fetchColumn();
     }
 
     public function insert(string $table, array $parameters) : void
@@ -56,6 +56,31 @@ final class Pdo
         $sql = 'INSERT INTO ' . $table . ' (' . implode(', ', $columns) . ') VALUES ' . $allPlaces;
 
         $this->execute($sql, $values);
+    }
+
+    public function update(string $table, array $parameters) : void
+    {
+        if (!is_array($parameters[array_keys($parameters)[0]])) {
+            $parameters = [$parameters];
+        }
+
+        foreach ($parameters as $columns) {
+            $sql = 'UPDATE ' . $table . ' SET ';
+            $updates = 0;
+
+            foreach ($columns as $column => $value) {
+                if ($updates !== 0) {
+                    $sql .= ',';
+                }
+                $sql .= $column . '= ?';
+                $updates++;
+            }
+            $sql .= ' WHERE ' . array_keys($columns)[0] . '= ?';
+            $values = array_values($columns);
+            $values[] = $values[0];
+
+            $this->execute($sql, $values);
+        }
     }
 
     public function executeAtomically(callable $function)
