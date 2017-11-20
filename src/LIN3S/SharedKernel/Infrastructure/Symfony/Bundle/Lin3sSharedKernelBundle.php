@@ -27,9 +27,14 @@ class Lin3sSharedKernelBundle extends Bundle
 {
     public function build(ContainerBuilder $container)
     {
-        $container->addCompilerPass(new DoctrineORMCustomTypesPass(), PassConfig::TYPE_OPTIMIZE);
-        $container->addCompilerPass(new TacticianEventsBusPass());
+        $container->addCompilerPass(new TacticianEventsBusPass('domain_event_subscriber'));
         $container->addCompilerPass(new TacticianCommandBusPass());
+
+        if (!$container->hasExtension('doctrine')) {
+            return;
+        }
+
+        $container->addCompilerPass(new DoctrineORMCustomTypesPass(), PassConfig::TYPE_OPTIMIZE);
 
         $container->loadFromExtension('doctrine', [
             'orm' => [

@@ -30,7 +30,7 @@ class TacticianCommandBusPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container) : void
     {
-        if (!class_exists(TacticianBundle::class) || !$container->hasDefinition('tactician.commandbus.default')) {
+        if (!class_exists(TacticianBundle::class)) {
             return;
         }
 

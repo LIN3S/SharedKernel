@@ -26,6 +26,13 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class TacticianEventsBusPass implements CompilerPassInterface
 {
+    private $subscriberTag;
+
+    public function __construct($subscriberTag = 'event_subscriber')
+    {
+        $this->subscriberTag = $subscriberTag;
+    }
+
     public function process(ContainerBuilder $container) : void
     {
         if (!class_exists(TacticianDomainEventBundle::class)
@@ -46,14 +53,15 @@ class TacticianEventsBusPass implements CompilerPassInterface
 
     private function loadAllSubscribers(ContainerBuilder $container) : void
     {
-        $taggedServices = $container->findTaggedServiceIds('event_subscriber');
+        $taggedServices = $container->findTaggedServiceIds($this->subscriberTag);
 
         foreach ($taggedServices as $id => $tags) {
             foreach ($tags as $attributes) {
                 if (!isset($attributes['subscribes_to'])) {
                     throw new \Exception(sprintf(
-                        '"subscribes_to" parameter not found in %s service definition tagged with "event_subscriber"',
-                        $id
+                        '"subscribes_to" parameter not found in %s service definition tagged with "%s"',
+                        $id,
+                        $this->subscriberTag
                     ));
                 }
 
