@@ -35,7 +35,7 @@ final class Pdo
 
     public function count(string $sql, array $parameters = []) : int
     {
-        return (int)$this->execute($sql, $parameters)->fetchColumn();
+        return (int) $this->execute($sql, $parameters)->fetchColumn();
     }
 
     public function insert(string $table, array $parameters) : void
@@ -69,11 +69,11 @@ final class Pdo
             $updates = 0;
 
             foreach ($columns as $column => $value) {
-                if ($updates !== 0) {
+                if (0 !== $updates) {
                     $sql .= ',';
                 }
                 $sql .= $column . '= ?';
-                $updates++;
+                ++$updates;
             }
             $sql .= ' WHERE ' . array_keys($columns)[0] . '= ?';
             $values = array_values($columns);

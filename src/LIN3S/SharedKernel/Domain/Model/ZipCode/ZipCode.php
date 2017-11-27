@@ -37,7 +37,7 @@ class ZipCode
         return $this->zipCode;
     }
 
-    public function equals(ZipCode $zipCode)
+    public function equals(self $zipCode)
     {
         return $this->zipCode() === $zipCode->zipCode();
     }

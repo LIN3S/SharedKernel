@@ -45,7 +45,7 @@ class Phone
         $this->setPhone($phone, $region);
     }
 
-    public function equals(Phone $phone) : bool
+    public function equals(self $phone) : bool
     {
         return $this->phone() === $phone->phone();
     }

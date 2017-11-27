@@ -47,7 +47,7 @@ class Email
         return $this->domain;
     }
 
-    public function equals(Email $anEmail)
+    public function equals(self $anEmail)
     {
         return mb_strtolower((string) $this) === mb_strtolower((string) $anEmail);
     }

@@ -38,7 +38,7 @@ abstract class Id implements BaseId
         return (string) $this->id;
     }
 
-    public function equals(Id $id) : bool
+    public function equals(self $id) : bool
     {
         return $this->id() === $id->id();
     }

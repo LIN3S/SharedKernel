@@ -75,7 +75,7 @@ class Locale
         return $this->countries()[$this->countryCode()];
     }
 
-    public function equals(Locale $locale)
+    public function equals(self $locale)
     {
         return $this->locale() === $locale->locale();
     }
