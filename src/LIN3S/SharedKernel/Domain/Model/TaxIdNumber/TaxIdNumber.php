@@ -62,4 +62,19 @@ class TaxIdNumber
 
         return new self($dni);
     }
+
+    public function number() : string
+    {
+        return $this->tin;
+    }
+
+    public function equals(TaxIdNumber $tin) : bool
+    {
+        return $this->tin === $tin->number();
+    }
+
+    public function __toString() : string
+    {
+        return (string) $this->tin;
+    }
 }
