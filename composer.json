@@ -17,7 +17,8 @@
         "giggsey/libphonenumber-for-php": "^8.4",
         "keyvanakbary/slugifier": "^4.0",
         "ramsey/uuid": "^3.5",
-        "uvinum/zipcodevalidator": "^1.0"
+        "uvinum/zipcodevalidator": "^1.0",
+        "ulabox/nif-validator": "^1.2"
     },
     "require-dev": {
         "doctrine/orm": "^2.5",
