@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace LIN3S\SharedKernel\Domain\Model\TaxIdNumber;
 
-use LIN3S\SharedKernel\Exception\Exception;
+use LIN3S\SharedKernel\Exception\DomainException;
 
 /**
  * @author Beñat Espiña <benatespina@gmail.com>
  */
-class TaxIdNumberInvalidException extends Exception
+class TaxIdNumberInvalidException extends DomainException
 {
     public static function fromSpain(string $tin) : self
     {
