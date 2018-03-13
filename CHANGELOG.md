@@ -7,6 +7,7 @@ To get the diff between two versions, go to https://github.com/LIN3S/SharedKerne
 
 * 0.9.0
     * Added Doctrine Mappings ready to use with Doctrine in standalone mode.
+    * Added Iban and TaxIdNumber Doctrine custom types.
 * 0.8.0
     * Added Iban value object.
 * 0.7.1
