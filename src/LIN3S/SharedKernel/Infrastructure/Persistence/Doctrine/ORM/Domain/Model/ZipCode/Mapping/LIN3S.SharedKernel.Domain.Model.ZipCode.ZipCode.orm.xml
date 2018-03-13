@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+ This file is part of the Shared Kernel library.
+
+ Copyright (c) 2016-present LIN3S <info@lin3s.com>
+
+ For the full copyright and license information, please view the LICENSE
+ file that was distributed with this source code.
+
+-->
+
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                          http://raw.github.com/doctrine/doctrine2/master/doctrine-mapping.xsd">
+
+    <embeddable name="LIN3S\SharedKernel\Domain\Model\ZipCode\ZipCode">
+        <field name="zipCode" column="zip_code" length="20" nullable="true"/>
+    </embeddable>
+</doctrine-mapping>
