@@ -37,7 +37,7 @@ class PhoneType extends TextType
             return null;
         }
 
-        return Phone::fromInternatinal($value);
+        return Phone::fromInternational($value);
     }
 
     public function requiresSQLCommentHint(AbstractPlatform $platform) : bool
