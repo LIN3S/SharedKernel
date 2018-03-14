@@ -34,7 +34,7 @@ class PhoneType extends TextType
     public function convertToPHPValue($value, AbstractPlatform $platform) : ?Phone
     {
         if (null === $value) {
-            return;
+            return null;
         }
 
         return Phone::fromInternatinal($value);

@@ -34,7 +34,7 @@ class IbanType extends TextType
     public function convertToPHPValue($value, AbstractPlatform $platform) : ?Iban
     {
         if (null === $value) {
-            return;
+            return null;
         }
 
         return Iban::from($value);

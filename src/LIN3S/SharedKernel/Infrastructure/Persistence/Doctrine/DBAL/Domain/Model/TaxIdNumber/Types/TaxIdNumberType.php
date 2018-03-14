@@ -34,7 +34,7 @@ class TaxIdNumberType extends TextType
     public function convertToPHPValue($value, AbstractPlatform $platform) : ?TaxIdNumber
     {
         if (null === $value) {
-            return;
+            return null;
         }
 
         return TaxIdNumber::fromSpain($value);
