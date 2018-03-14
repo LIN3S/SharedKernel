@@ -22,7 +22,7 @@ use LIN3S\SharedKernel\Domain\Model\Iban\Iban;
  */
 class IbanType extends TextType
 {
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue($value, AbstractPlatform $platform) : ?string
     {
         if ($value instanceof Iban) {
             return $value->iban();
@@ -31,13 +31,18 @@ class IbanType extends TextType
         return $value;
     }
 
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value, AbstractPlatform $platform) : ?Iban
     {
         if (null === $value) {
             return;
         }
 
         return Iban::from($value);
+    }
+
+    public function requiresSQLCommentHint(AbstractPlatform $platform) : bool
+    {
+        return true;
     }
 
     public function getName()

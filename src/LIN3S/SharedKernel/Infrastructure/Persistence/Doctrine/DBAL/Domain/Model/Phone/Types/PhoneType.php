@@ -22,7 +22,7 @@ use LIN3S\SharedKernel\Domain\Model\Phone\Phone;
  */
 class PhoneType extends TextType
 {
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue($value, AbstractPlatform $platform) : ?string
     {
         if ($value instanceof Phone) {
             return $value->phone();
@@ -31,7 +31,7 @@ class PhoneType extends TextType
         return $value;
     }
 
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value, AbstractPlatform $platform) : ?Phone
     {
         if (null === $value) {
             return;
@@ -40,7 +40,12 @@ class PhoneType extends TextType
         return Phone::fromInternatinal($value);
     }
 
-    public function getName()
+    public function requiresSQLCommentHint(AbstractPlatform $platform) : bool
+    {
+        return true;
+    }
+
+    public function getName() : string
     {
         return 'phone';
     }

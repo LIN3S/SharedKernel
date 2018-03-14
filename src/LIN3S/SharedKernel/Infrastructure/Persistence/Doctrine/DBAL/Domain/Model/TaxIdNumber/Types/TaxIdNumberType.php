@@ -22,7 +22,7 @@ use LIN3S\SharedKernel\Domain\Model\TaxIdNumber\TaxIdNumber;
  */
 class TaxIdNumberType extends TextType
 {
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue($value, AbstractPlatform $platform) : ?string
     {
         if ($value instanceof TaxIdNumber) {
             return $value->number();
@@ -31,7 +31,7 @@ class TaxIdNumberType extends TextType
         return $value;
     }
 
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value, AbstractPlatform $platform) : ?TaxIdNumber
     {
         if (null === $value) {
             return;
@@ -40,7 +40,12 @@ class TaxIdNumberType extends TextType
         return TaxIdNumber::fromSpain($value);
     }
 
-    public function getName()
+    public function requiresSQLCommentHint(AbstractPlatform $platform) : bool
+    {
+        return true;
+    }
+
+    public function getName() : string
     {
         return 'tax_id_number';
     }
