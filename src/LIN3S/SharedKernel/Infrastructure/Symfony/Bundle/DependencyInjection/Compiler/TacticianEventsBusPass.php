@@ -64,7 +64,7 @@ class TacticianEventsBusPass implements CompilerPassInterface
         $taggedServices = $container->findTaggedServiceIds($this->subscriberTag);
 
         foreach ($taggedServices as $id => $tags) {
-            foreach ($tags as $attributes) {
+            foreach ($tags as $key => $attributes) {
                 if (!isset($attributes['subscribes_to'])) {
                     throw new \Exception(sprintf(
                         '"subscribes_to" parameter not found in %s service definition tagged with "%s"',
@@ -74,7 +74,7 @@ class TacticianEventsBusPass implements CompilerPassInterface
                 }
 
                 $container->setDefinition(
-                    'tactician_event_subscriber.' . $id,
+                    'tactician_event_subscriber.' . $id . '_' . $key,
                     new Definition(
                         TacticianEventSubscriber::class,
                         [new Reference($id)]
