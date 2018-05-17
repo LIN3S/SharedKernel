@@ -55,6 +55,11 @@ class Phone
         return PhoneNumberUtil::getInstance()->format($this->phone, PhoneNumberFormat::E164);
     }
 
+    public function nationalPhone() : string
+    {
+        return PhoneNumberUtil::getInstance()->getNationalSignificantNumber($this->phone);
+    }
+
     public function phoneCallingFrom($region) : string
     {
         return PhoneNumberUtil::getInstance()->formatOutOfCountryCallingNumber($this->phone, $region);
