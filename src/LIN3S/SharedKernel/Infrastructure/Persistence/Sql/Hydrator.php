@@ -26,7 +26,7 @@ final class Hydrator
         $object = $reflectionClass->newInstanceWithoutConstructor();
         $this->setValuesToObject($reflectionClass, $object, $values);
 
-        Return $object;
+        return $object;
     }
 
     private function setValuesToObject(\ReflectionClass $reflectionClass, $object, array $values)
