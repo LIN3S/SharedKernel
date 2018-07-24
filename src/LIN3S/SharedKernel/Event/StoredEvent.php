@@ -110,7 +110,7 @@ class StoredEvent implements \JsonSerializable
     {
         $property->setAccessible(true);
         $value = $property->getValue($object);
-        if (null === $value || is_scalar($value)) {
+        if (null === $value || is_scalar($value) || is_array($value)) {
             return $value;
         }
 
