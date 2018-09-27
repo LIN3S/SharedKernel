@@ -79,7 +79,9 @@ class TacticianEventsBusPass implements CompilerPassInterface
                         TacticianEventSubscriber::class,
                         [new Reference($id)]
                     )
-                )->addTag('tactician.event_listener', ['event' => $attributes['subscribes_to']]);
+                )
+                    ->setPublic(true)		
+                    ->addTag('tactician.event_listener', ['event' => $attributes['subscribes_to']]);
             }
         }
     }
